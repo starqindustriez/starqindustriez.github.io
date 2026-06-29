@@ -25,6 +25,7 @@
       width: 100%;
     }
 
+    /* ---- HEADER & NAVIGATION ---- */
     .header {
       border-bottom: 2px solid #00f3ff;
       padding-bottom: 20px;
@@ -48,13 +49,25 @@
       display: block;
     }
 
-    .tagline {
+    .nav a {
       color: #888;
-      font-style: italic;
-      border-left: 2px solid #00f3ff;
-      padding-left: 15px;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 1rem;
+      transition: color 0.2s;
     }
 
+    .nav a:hover {
+      color: #00f3ff;
+    }
+
+    .nav a.active {
+      color: #00f3ff;
+      border-bottom: 2px solid #00f3ff;
+      padding-bottom: 5px;
+    }
+
+    /* ---- PRODUCT GRID ---- */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -128,6 +141,7 @@
       padding-top: 10px;
     }
 
+    /* ---- FOOTER ---- */
     .footer {
       margin-top: 50px;
       border-top: 1px solid #222;
@@ -146,18 +160,16 @@
       text-decoration: underline;
     }
 
+    /* ---- RESPONSIVE ---- */
     @media (max-width: 600px) {
       .header {
         flex-direction: column;
         align-items: start;
-        gap: 10px;
+        gap: 15px;
       }
-      .tagline {
-        border-left: none;
-        padding-left: 0;
-        border-top: 1px solid #222;
-        padding-top: 10px;
-        width: 100%;
+      .nav a {
+        margin-left: 0;
+        margin-right: 20px;
       }
     }
   </style>
@@ -165,26 +177,27 @@
 <body>
   <div class="container">
 
-    <!-- HEADER -->
+    <!-- ===== HEADER WITH NAVIGATION ===== -->
     <div class="header">
       <div class="logo">
         <h1>⚡ STARQ INDUSTRIEZ</h1>
         <span>Building next-gen utilities for Windows.</span>
       </div>
-      <div class="tagline">
-        Secure. Simple. One-time payment.
+      <div class="nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="about.html">About</a>
       </div>
     </div>
 
-    <!-- PRODUCT GRID -->
+    <!-- ===== PRODUCT GRID ===== -->
     <div class="grid">
 
       <!-- PRODUCT 1: GUARDIAN -->
       <div class="card">
         <div class="icon">🛡️</div>
         <h3>Security Guardian</h3>
-        <div class="desc">USB virus scanner, real-time monitor,One - Time Purchase, No Subscription Required, USB history tracker, and threat counter.</div>
-        <div class="price">₹99</div>
+        <div class="desc">USB virus scanner, real-time monitor, One-Time Purchase. No Subscription Required. USB history tracker, and threat counter.</div>
+        <div class="price">₹199</div>
         <a href="#" class="buy-btn">Buy Now</a>
         <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
       </div>
@@ -194,7 +207,7 @@
         <div class="icon">📹</div>
         <h3>YT Playlist Downloader</h3>
         <div class="desc">Download entire YouTube playlists as MP4 or MP3 in one click.</div>
-        <div class="price">₹50</div>
+        <div class="price">₹99</div>
         <a href="#" class="buy-btn">Buy Now</a>
         <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
       </div>
@@ -204,7 +217,7 @@
         <div class="icon">🧹</div>
         <h3>Nova Cleaner</h3>
         <div class="desc">One-click system cleaner. Removes junk files and temp data instantly.</div>
-        <div class="price">₹20</div>
+        <div class="price">₹99</div>
         <a href="#" class="buy-btn">Buy Now</a>
         <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
       </div>
@@ -214,14 +227,14 @@
         <div class="icon">🎵</div>
         <h3>MoodTune</h3>
         <div class="desc">Offline ambient music generator. Relax, focus, and code in peace.</div>
-        <div class="price">₹10</div>
+        <div class="price">₹99</div>
         <a href="#" class="buy-btn">Buy Now</a>
         <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
       </div>
 
     </div>
 
-    <!-- FOOTER -->
+    <!-- ===== FOOTER ===== -->
     <div class="footer">
       <p>📱 Follow us on Instagram: <a href="https://instagram.com/starq.industriez" target="_blank">@starq.industriez</a></p>
       <p style="margin-top: 5px;">Built with ❤️ in India 🇮🇳 | © 2026 Starq Industriez</p>

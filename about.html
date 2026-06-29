@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STARQ INDUSTRIEZ – Next-Gen Utilities</title>
+  <title>About – STARQ INDUSTRIEZ</title>
   <style>
     * {
       margin: 0;
@@ -21,11 +21,10 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 800px;
       width: 100%;
     }
 
-    /* ---- HEADER & NAVIGATION ---- */
     .header {
       border-bottom: 2px solid #00f3ff;
       padding-bottom: 20px;
@@ -67,81 +66,47 @@
       padding-bottom: 5px;
     }
 
-    /* ---- PRODUCT GRID ---- */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-      margin: 40px 0;
-    }
-
-    .card {
+    .content {
       background: #141414;
       border: 1px solid #222;
       border-radius: 12px;
-      padding: 25px 20px;
-      text-align: center;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      padding: 40px 30px;
+      margin: 20px 0;
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: #00f3ff;
-    }
-
-    .card .icon {
-      font-size: 3rem;
-      margin-bottom: 10px;
-    }
-
-    .card h3 {
+    .content h2 {
       color: #00f3ff;
-      font-size: 1.4rem;
-      margin-bottom: 8px;
+      font-size: 2rem;
+      margin-bottom: 20px;
     }
 
-    .card .desc {
-      color: #aaa;
-      font-size: 0.9rem;
-      margin-bottom: 15px;
-      min-height: 40px;
-    }
-
-    .card .price {
-      font-size: 1.3rem;
-      font-weight: bold;
+    .content h3 {
       color: #39ff14;
+      font-size: 1.2rem;
+      margin: 30px 0 12px 0;
+    }
+
+    .content p {
+      color: #aaa;
+      line-height: 1.9;
+      font-size: 1.05rem;
       margin-bottom: 15px;
     }
 
-    .buy-btn {
-      display: inline-block;
-      background: #00f3ff;
-      color: #0A0A0A;
+    .content .highlight {
+      color: #00f3ff;
       font-weight: bold;
-      padding: 10px 30px;
-      border-radius: 30px;
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: background 0.2s, box-shadow 0.2s;
-      border: none;
-      cursor: pointer;
     }
 
-    .buy-btn:hover {
-      background: #00c8d4;
-      box-shadow: 0 0 15px #00f3ff88;
+    .content .quote {
+      font-style: italic;
+      color: #00f3ff;
+      font-size: 1.2rem;
+      border-left: 3px solid #00f3ff;
+      padding-left: 20px;
+      margin: 20px 0;
     }
 
-    .buy-btn-placeholder {
-      color: #555;
-      font-size: 0.7rem;
-      margin-top: 10px;
-      border-top: 1px dashed #333;
-      padding-top: 10px;
-    }
-
-    /* ---- FOOTER ---- */
     .footer {
       margin-top: 50px;
       border-top: 1px solid #222;
@@ -160,7 +125,6 @@
       text-decoration: underline;
     }
 
-    /* ---- RESPONSIVE ---- */
     @media (max-width: 600px) {
       .header {
         flex-direction: column;
@@ -171,70 +135,51 @@
         margin-left: 0;
         margin-right: 20px;
       }
+      .content {
+        padding: 25px 20px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
 
-    <!-- ===== HEADER WITH NAVIGATION ===== -->
     <div class="header">
       <div class="logo">
         <h1>⚡ STARQ INDUSTRIEZ</h1>
         <span>Building next-gen utilities for Windows.</span>
       </div>
       <div class="nav">
-        <a href="index.html" class="active">Home</a>
-        <a href="about.html">About</a>
+        <a href="index.html">Home</a>
+        <a href="about.html" class="active">About</a>
       </div>
     </div>
 
-    <!-- ===== PRODUCT GRID ===== -->
-    <div class="grid">
+    <div class="content">
+      <h2>About Starq Industriez</h2>
 
-      <!-- PRODUCT 1: GUARDIAN -->
-      <div class="card">
-        <div class="icon">🛡️</div>
-        <h3>Security Guardian</h3>
-        <div class="desc">USB virus scanner, real-time monitor, USB history tracker, and threat counter. One-time purchase, lifetime use.</div>
-        <div class="price">₹199</div>
-        <a href="#" class="buy-btn">Buy Now</a>
-        <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
+      <p>Starq Industriez was founded in <span class="highlight">March 2026</span> by a 17-year-old student from India. Built during summer break, the company was born from a simple idea:</p>
+
+      <div class="quote">
+        "Software should be useful, affordable, and just work — no subscriptions, no bloat."
       </div>
 
-      <!-- PRODUCT 2: YT DOWNLOADER -->
-      <div class="card">
-        <div class="icon">📹</div>
-        <h3>YT Playlist Downloader</h3>
-        <div class="desc">Download entire YouTube playlists as MP4 or MP3 in one click.</div>
-        <div class="price">₹99</div>
-        <a href="#" class="buy-btn">Buy Now</a>
-        <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
-      </div>
+      <h3>🚀 Our Mission</h3>
+      <p>To build <span class="highlight">offline-first, one-time-payment utilities</span> for everyday Windows users. We believe you shouldn't pay every month to keep your PC clean, secure, or productive.</p>
 
-      <!-- PRODUCT 3: NOVA CLEANER -->
-      <div class="card">
-        <div class="icon">🧹</div>
-        <h3>Nova Cleaner</h3>
-        <div class="desc">One-click system cleaner. Removes junk files and temp data instantly.</div>
-        <div class="price">₹99</div>
-        <a href="#" class="buy-btn">Buy Now</a>
-        <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
-      </div>
+      <h3>🛠️ Our Products</h3>
+      <p>We focus on solving specific problems: <span class="highlight">USB security</span> (Guardian), <span class="highlight">YouTube downloading</span> (YT Playlist Downloader), <span class="highlight">system cleaning</span> (Nova Cleaner), and <span class="highlight">focus music</span> (MoodTune). Every tool is packaged as a single <code>.exe</code> — no installation required, no hidden charges.</p>
 
-      <!-- PRODUCT 4: MOODTUNE -->
-      <div class="card">
-        <div class="icon">🎵</div>
-        <h3>MoodTune</h3>
-        <div class="desc">Offline ambient music generator. Relax, focus, and code in peace.</div>
-        <div class="price">₹99</div>
-        <a href="#" class="buy-btn">Buy Now</a>
-        <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
-      </div>
+      <h3>🧠 Who We Are</h3>
+      <p>Starq Industriez is a <span class="highlight">one-person company</span>, run by a teenager who learned to build with the help of AI, tested on real machines, and shipped to real users. No big team. No big budget. Just <span class="highlight">grit, curiosity, and a dream to build something real.</span></p>
 
+      <h3>🇮🇳 Made in India</h3>
+      <p>All our products are designed and built in India. We're proud to represent the next generation of Indian indie developers — building global-quality software from a middle-class home.</p>
+
+      <h3>📱 Connect With Us</h3>
+      <p>Follow our journey on Instagram: <a href="https://instagram.com/starq.industriez" target="_blank" style="color:#00f3ff;">@starq.industriez</a>. We post updates, behind-the-scenes, and new product launches.</p>
     </div>
 
-    <!-- ===== FOOTER ===== -->
     <div class="footer">
       <p>📱 Follow us on Instagram: <a href="https://instagram.com/starq.industriez" target="_blank">@starq.industriez</a></p>
       <p style="margin-top: 5px;">Built with ❤️ in India 🇮🇳 | © 2026 Starq Industriez</p>

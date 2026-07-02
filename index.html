@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login – STARQ INDUSTRIEZ</title>
 
   <!-- Firebase SDKs -->
@@ -67,12 +67,8 @@
       color: #0A0A0A;
       border-color: #00f3ff;
     }
-    .toggle-btns button:hover {
-      border-color: #00f3ff;
-    }
-    .form-group {
-      margin-bottom: 18px;
-    }
+    .toggle-btns button:hover { border-color: #00f3ff; }
+    .form-group { margin-bottom: 18px; }
     .form-group label {
       display: block;
       color: #aaa;
@@ -90,9 +86,7 @@
       outline: none;
       transition: 0.3s;
     }
-    .form-group input:focus {
-      border-color: #00f3ff;
-    }
+    .form-group input:focus { border-color: #00f3ff; }
     .btn-primary {
       width: 100%;
       padding: 14px;
@@ -110,34 +104,16 @@
       background: #00c8d4;
       box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
     }
-    .error-msg {
-      color: #ff0055;
-      font-size: 0.85rem;
-      margin-top: 12px;
-      text-align: center;
-      min-height: 24px;
-    }
-    .success-msg {
-      color: #39ff14;
-      font-size: 0.85rem;
-      margin-top: 12px;
-      text-align: center;
-      min-height: 24px;
-    }
+    .error-msg { color: #ff0055; font-size: 0.85rem; margin-top: 12px; text-align: center; min-height: 24px; }
+    .success-msg { color: #39ff14; font-size: 0.85rem; margin-top: 12px; text-align: center; min-height: 24px; }
     .switch-text {
       text-align: center;
       color: #888;
       font-size: 0.9rem;
       margin-top: 18px;
     }
-    .switch-text span {
-      color: #00f3ff;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .switch-text span:hover {
-      text-decoration: underline;
-    }
+    .switch-text span { color: #00f3ff; cursor: pointer; font-weight: 600; }
+    .switch-text span:hover { text-decoration: underline; }
     .footer-text {
       text-align: center;
       color: #555;
@@ -157,7 +133,6 @@
     <p>Secure. Simple. One-time payment.</p>
   </div>
 
-  <!-- Toggle Buttons -->
   <div class="toggle-btns">
     <button id="loginToggle" class="active">Login</button>
     <button id="signupToggle">Sign Up</button>
@@ -205,7 +180,6 @@
 
 <script>
   // ===================== FIREBASE CONFIG =====================
-  // 🔥 PASTE YOUR EXACT FIREBASE CONFIG HERE
   const firebaseConfig = {
     apiKey: "AIzaSyDCE1PidwUCHPrccgcEn_EEr07IGB49n9A",
     authDomain: "starq-industriez.firebaseapp.com",
@@ -215,7 +189,6 @@
     appId: "1:841933358955:web:8c7d87b2e8ff4ed42d6e2e"
   };
 
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
@@ -241,7 +214,7 @@
   const signupError = document.getElementById('signupError');
   const signupSuccess = document.getElementById('signupSuccess');
 
-  // ===================== TOGGLE LOGIN / SIGNUP =====================
+  // ===================== TOGGLE =====================
   function showLogin() {
     loginForm.classList.remove('hidden');
     signupForm.classList.add('hidden');
@@ -251,7 +224,6 @@
     document.getElementById('switchLink').addEventListener('click', showSignup);
     clearMessages();
   }
-
   function showSignup() {
     loginForm.classList.add('hidden');
     signupForm.classList.remove('hidden');
@@ -261,11 +233,9 @@
     document.getElementById('switchLink').addEventListener('click', showLogin);
     clearMessages();
   }
-
   loginToggle.addEventListener('click', showLogin);
   signupToggle.addEventListener('click', showSignup);
   switchLink.addEventListener('click', showSignup);
-
   function clearMessages() {
     loginError.textContent = '';
     loginSuccess.textContent = '';
@@ -279,24 +249,20 @@
     const password = loginPassword.value.trim();
     loginError.textContent = '';
     loginSuccess.textContent = '';
-
     if (!email || !password) {
       loginError.textContent = 'Please enter email and password.';
       return;
     }
-
     try {
       await auth.signInWithEmailAndPassword(email, password);
       loginSuccess.textContent = '✅ Login successful! Redirecting...';
-      setTimeout(() => {
-        window.location.href = 'home.html';
-      }, 1000);
+      setTimeout(() => { window.location.href = 'home.html'; }, 1000);
     } catch (err) {
       loginError.textContent = err.message;
     }
   });
 
-  // ===================== SIGN-UP =====================
+  // ===================== SIGN-UP (WITH FIRESTORE WRITE) =====================
   signupBtn.addEventListener('click', async () => {
     const name = signupName.value.trim();
     const email = signupEmail.value.trim();
@@ -314,13 +280,14 @@
     }
 
     try {
+      // 1. Create Auth User
       const userCred = await auth.createUserWithEmailAndPassword(email, password);
       const user = userCred.user;
 
-      // Update display name
+      // 2. Update display name
       await user.updateProfile({ displayName: name });
 
-      // Store user data in Firestore
+      // 3. ✅ WRITE TO FIRESTORE (THIS IS THE CRITICAL PART)
       await db.collection('users').doc(user.uid).set({
         name: name,
         email: email,
@@ -336,13 +303,13 @@
       }, 1500);
     } catch (err) {
       signupError.textContent = err.message;
+      console.error('Signup error:', err);
     }
   });
 
-  // ===================== AUTO-REDIRECT IF ALREADY LOGGED IN =====================
+  // ===================== AUTO-REDIRECT =====================
   auth.onAuthStateChanged((user) => {
     if (user) {
-      // User is already logged in — send them straight to the product page
       window.location.href = 'home.html';
     }
   });

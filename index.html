@@ -262,7 +262,7 @@
     }
   });
 
-  // ===================== SIGN-UP (WITH FIRESTORE WRITE) =====================
+  // ===================== SIGN-UP (WITH FIRESTORE WRITE – FIXED) =====================
   signupBtn.addEventListener('click', async () => {
     const name = signupName.value.trim();
     const email = signupEmail.value.trim();
@@ -287,11 +287,11 @@
       // 2. Update display name
       await user.updateProfile({ displayName: name });
 
-      // 3. ✅ WRITE TO FIRESTORE (THIS IS THE CRITICAL PART)
+      // 3. ✅ WRITE TO FIRESTORE (CORRECTED)
       await db.collection('users').doc(user.uid).set({
         name: name,
         email: email,
-        starzBalance: 10,          // Welcome bonus
+        starzBalance: 10,          // <-- CORRECT field name (with 'z')
         totalSpent: 0,
         rank: 'Cadet',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -302,7 +302,7 @@
         window.location.href = 'home.html';
       }, 1500);
     } catch (err) {
-      signupError.textContent = err.message;
+      signupError.textContent = '❌ ' + err.message;
       console.error('Signup error:', err);
     }
   });

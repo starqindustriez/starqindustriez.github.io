@@ -111,21 +111,25 @@
 
     .screenshot-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
       margin-top: 15px;
     }
-    .screenshot-placeholder {
-      background: #0A0A0A;
-      border: 1px dashed #444;
+    .screenshot-grid img {
+      width: 100%;
       border-radius: 8px;
-      height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #555;
+      border: 1px solid #333;
+      transition: transform 0.2s;
+    }
+    .screenshot-grid img:hover {
+      transform: scale(1.02);
+      border-color: #00f3ff;
+    }
+    .screenshot-caption {
+      color: #888;
       font-size: 0.8rem;
       text-align: center;
+      margin-top: 5px;
     }
 
     .download-area {
@@ -198,44 +202,56 @@
   <div class="product-header">
     <div class="icon">🛡️</div>
     <h2>Starq Industriez Security Guardian</h2>
-    <div class="price-tag">₹99 – One Time</div>
-    <p style="color: #888; margin-top: 10px;">No Subscription. Lifetime Use.</p>
+    <div class="price-tag">₹199 – One Time</div>
+    <p style="color: #888; margin-top: 10px;">No Subscription. Lifetime Use. No Internet Required.</p>
   </div>
 
   <!-- 1. LONG DESCRIPTION -->
   <div class="content-section">
     <h3>🔍 What is Guardian?</h3>
-    <p>Guardian is a <strong>lightweight USB security utility</strong> for Windows. It does not replace your antivirus—it <strong>complements</strong> it.</p>
-    <p>While traditional antiviruses scan the whole system, Guardian sits quietly in the background, watching your USB ports, Desktop, and Downloads folder. It catches threats <strong>before</strong> they execute, giving you full control.</p>
+    <p>Guardian is a <strong>lightweight USB security utility</strong> built for Windows. It doesn't replace your antivirus—it <strong>complements</strong> it by focusing specifically on USB ports, real-time file creation, and user-controlled threat management.</p>
+    <p>While traditional antiviruses are heavy and slow down your PC, Guardian sits silently in the background, using almost zero CPU. It catches threats <strong>before</strong> they can execute, giving you full control over what stays and what gets removed.</p>
     <ul>
-      <li><strong>USB Virus Scanner:</strong> Instantly scans any USB drive for threats the moment it is inserted.</li>
-      <li><strong>USB History Tracker:</strong> Logs every USB ever plugged in (Drive, Time, Volume Label, File System).</li>
-      <li><strong>Real-Time Monitor:</strong> Watches your Desktop, Downloads, and Temp folders for suspicious files.</li>
-      <li><strong>Quarantine & Exceptions:</strong> Move threats to a secure folder, or whitelist files you trust.</li>
-      <li><strong>Live Threat Counter:</strong> Shows exactly how many threats Guardian has blocked.</li>
+      <li><strong>⚡ Instant USB Virus Scanner:</strong> The moment you plug in a USB drive, Guardian detects it and offers an instant scan—catching malware before it spreads.</li>
+      <li><strong>📜 USB History Tracker:</strong> Maintains a SQLite database logging every USB ever plugged in, including Drive Letter, Volume Label, File System, and Timestamp. Exportable to CSV.</li>
+      <li><strong>👁️ Real-Time File Monitor:</strong> Watches your <code>Desktop</code>, <code>Downloads</code>, and <code>Temp</code> folders. If a suspicious file (like `.exe`, `.vbs`, `.js`, etc.) appears, Guardian alerts you immediately.</li>
+      <li><strong>🛡️ Full Control Quarantine:</strong> When threats are found, you get a dialog box allowing you to Select All, Deselect All, or choose specific files to Quarantine. You have the final say.</li>
+      <li><strong>🤝 Trust (Exceptions) System:</strong> Found a false positive? Click "Trust". The file is added to a secure exceptions list and will never be flagged again.</li>
+      <li><strong>📊 Live Threat Counter & Stats:</strong> Tracks exactly how many threats Guardian has blocked for you since installation. Includes a detailed "Stats" dialog showing total scans, quarantine count, and more.</li>
+      <li><strong>🔔 Daily Scan Reminder:</strong> Guardian politely reminds you once a day to run a full system scan, ensuring your PC stays safe without nagging you.</li>
+      <li><strong>⬇️ Background Mode (Tray):</strong> Click "Run in Background" to minimize Guardian to the system tray. It continues monitoring without cluttering your taskbar.</li>
+      <li><strong>📄 Read-Only Activity Log:</strong> All actions are logged in real-time. The log is locked for editing, so users can't accidentally delete important security events.</li>
     </ul>
   </div>
 
-  <!-- 2. HOW TO USE / MANUAL -->
+  <!-- 2. HOW TO DOWNLOAD & INSTALL -->
   <div class="content-section">
-    <h3>📖 How to Use Guardian</h3>
-    <p><strong>Step 1:</strong> Download the `.exe` file (from the button below).</p>
-    <p><strong>Step 2:</strong> Right-click the file and select <strong>"Run as administrator"</strong> (required for full USB detection).</p>
-    <p><strong>Step 3:</strong> Insert a USB drive. Guardian will detect it and ask if you want to scan it.</p>
-    <p><strong>Step 4:</strong> Check the "USB History" tab to see a log of all USBs ever connected.</p>
-    <p><strong>Step 5:</strong> If a threat is found, you can Quarantine it or Trust it (add to exceptions).</p>
+    <h3>📖 How to Download & Install Guardian</h3>
+    <p><strong>Step 1:</strong> Click the <strong>"Buy & Download – ₹199"</strong> button below. You will be redirected to our secure payment page (Instamojo).</p>
+    <p><strong>Step 2:</strong> Complete the payment via UPI, Credit/Debit Card, or Net Banking.</p>
+    <p><strong>Step 3:</strong> After successful payment, you will be redirected to a download page. Click the download button to save <code>Starq_Industriez_Guardian.exe</code> to your computer.</p>
+    <p><strong>Step 4 (Important):</strong> Locate the downloaded file. <strong>Right-click</strong> on it and select <strong>"Run as administrator"</strong>. This is mandatory for USB detection and real-time monitoring to work properly.</p>
+    <p><strong>⚠️ Windows SmartScreen Warning:</strong> Since Starq Industriez is a new independent developer, Windows might show a warning saying "Windows protected your PC". This is normal for new software. To proceed: Click <strong>"More info"</strong> → then click <strong>"Run anyway"</strong>. We do not collect any personal data.</p>
+    <p><strong>Step 5:</strong> Once launched, insert a USB drive to test the scanner. You're all set!</p>
   </div>
 
-  <!-- 3. SCREENSHOTS (Placeholders) -->
+  <!-- 3. SCREENSHOTS (Images Integrated) -->
   <div class="content-section">
-    <h3>🖼️ Screenshots</h3>
+    <h3>🖼️ Guardian in Action</h3>
     <div class="screenshot-grid">
-      <div class="screenshot-placeholder">📸 [Scanning USB]</div>
-      <div class="screenshot-placeholder">📸 [USB History Log]</div>
-      <div class="screenshot-placeholder">📸 [Quarantine Folder]</div>
-      <div class="screenshot-placeholder">📸 [Real-Time Alert]</div>
+      <div>
+        <img src="show Live Scanning In ACTIVITY LOG.JPG" alt="Guardian Live Scanning Interface">
+        <div class="screenshot-caption">Live Scanning & Activity Log</div>
+      </div>
+      <div>
+        <img src="Recommends Full Scanning.JPG" alt="Daily Scan Reminder">
+        <div class="screenshot-caption">Daily Scan Reminder</div>
+      </div>
+      <div>
+        <img src="full controll to user.JPG" alt="Full User Control Quarantine">
+        <div class="screenshot-caption">Full Control: Select & Quarantine</div>
+      </div>
     </div>
-    <p style="font-size: 0.8rem; color: #555; margin-top: 10px; text-align: center;">*Replace these placeholders with actual screenshots by editing the HTML.</p>
   </div>
 
   <!-- 4. DOWNLOAD / BUY SECTION -->
@@ -243,7 +259,7 @@
     <h3 style="border-left: none; text-align: center;">🚀 Ready to Secure Your USBs?</h3>
     <p style="margin-bottom: 20px;">Pay ₹199 once. Use Guardian forever. No hidden charges. No subscription.</p>
     <div class="download-area">
-      <a href="#" class="btn-primary">🔒 Buy & Download – ₹99</a>
+      <a href="#" class="btn-primary">🔒 Buy & Download – ₹199</a>
       <br>
       <a href="home.html" class="btn-secondary">← Back to Home</a>
     </div>

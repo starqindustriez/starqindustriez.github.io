@@ -49,7 +49,6 @@
     .nav-links a:hover { color: #00f3ff; }
     .nav-links a.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; padding-bottom: 5px; }
 
-    /* Product Detail Section */
     .product-header {
       text-align: center;
       margin-bottom: 40px;
@@ -111,7 +110,7 @@
 
     .screenshot-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
       margin-top: 15px;
     }
@@ -119,10 +118,11 @@
       width: 100%;
       border-radius: 8px;
       border: 1px solid #333;
-      transition: transform 0.2s;
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: pointer;
     }
     .screenshot-grid img:hover {
-      transform: scale(1.02);
+      transform: scale(1.05);
       border-color: #00f3ff;
     }
     .screenshot-caption {
@@ -130,6 +130,45 @@
       font-size: 0.8rem;
       text-align: center;
       margin-top: 5px;
+    }
+
+    /* ===== LIGHTBOX (Zoom) ===== */
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      padding-top: 40px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(4px);
+    }
+    .lightbox-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+      border: 2px solid #00f3ff;
+      box-shadow: 0 0 50px rgba(0, 243, 255, 0.15);
+    }
+    .close-lightbox {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      color: #f1f1f1;
+      font-size: 45px;
+      font-weight: bold;
+      transition: 0.3s;
+      cursor: pointer;
+      z-index: 10000;
+    }
+    .close-lightbox:hover {
+      color: #00f3ff;
+      text-shadow: 0 0 20px #00f3ff;
     }
 
     .download-area {
@@ -235,23 +274,32 @@
     <p><strong>Step 5:</strong> Once launched, insert a USB drive to test the scanner. You're all set!</p>
   </div>
 
-  <!-- 3. SCREENSHOTS (Images Integrated) -->
+  <!-- 3. SCREENSHOTS (4 Images Added + Click to Zoom) -->
   <div class="content-section">
     <h3>🖼️ Guardian in Action</h3>
     <div class="screenshot-grid">
+      <!-- Image 1 -->
       <div>
-        <img src="show Live Scanning In ACTIVITY LOG.JPG" alt="Guardian Live Scanning Interface">
+        <img src="show Live Scanning In ACTIVITY LOG.JPG" alt="Live Scanning">
         <div class="screenshot-caption">Live Scanning & Activity Log</div>
       </div>
+      <!-- Image 2 -->
       <div>
-        <img src="Recommends Full Scanning.JPG" alt="Daily Scan Reminder">
+        <img src="Recommends Full Scanning.JPG" alt="Daily Reminder">
         <div class="screenshot-caption">Daily Scan Reminder</div>
       </div>
+      <!-- Image 3 -->
       <div>
-        <img src="full controll to user.JPG" alt="Full User Control Quarantine">
-        <div class="screenshot-caption">Full Control: Select & Quarantine</div>
+        <img src="full controll to user.JPG" alt="Quarantine">
+        <div class="screenshot-caption">Full Control: Quarantine</div>
+      </div>
+      <!-- Image 4 (NEW SLOT - CHANGE FILENAME TO YOUR 4TH UPLOADED FILE) -->
+      <div>
+        <img src="USB_History.JPG" alt="USB History">
+        <div class="screenshot-caption">USB History Log</div>
       </div>
     </div>
+    <p style="font-size: 0.8rem; color: #555; margin-top: 15px; text-align: center;">🖱️ Click on any image to zoom in.</p>
   </div>
 
   <!-- 4. DOWNLOAD / BUY SECTION -->
@@ -273,5 +321,36 @@
   </div>
 
 </div>
+
+<!-- ===== LIGHTBOX MODAL (ZOOM) ===== -->
+<div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
+  <span class="close-lightbox">&times;</span>
+  <img class="lightbox-content" id="lightboxImg">
+</div>
+
+<!-- ===== JAVASCRIPT FOR ZOOM ===== -->
+<script>
+  function openLightbox(imgElement) {
+    var modal = document.getElementById('imageLightbox');
+    var modalImg = document.getElementById('lightboxImg');
+    modal.style.display = "block";
+    modalImg.src = imgElement.src;
+  }
+
+  function closeLightbox() {
+    document.getElementById('imageLightbox').style.display = "none";
+  }
+
+  // Attach click listeners to all screenshot images
+  document.addEventListener('DOMContentLoaded', function() {
+    var imgs = document.querySelectorAll('.screenshot-grid img');
+    imgs.forEach(function(img) {
+      img.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openLightbox(this);
+      });
+    });
+  });
+</script>
 </body>
 </html>

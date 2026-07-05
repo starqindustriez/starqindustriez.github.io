@@ -49,11 +49,21 @@
     .nav-links a:hover { color: #00f3ff; }
     .nav-links a.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; padding-bottom: 5px; }
 
+    /* ===== PRODUCT HEADER WITH CUSTOM ICON ===== */
     .product-header {
       text-align: center;
       margin-bottom: 40px;
     }
-    .product-header .icon { font-size: 4rem; }
+    .product-header .icon-img {
+      width: 80px;
+      height: auto;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.3));
+      transition: transform 0.3s;
+    }
+    .product-header .icon-img:hover {
+      transform: scale(1.05);
+    }
     .product-header h2 {
       color: #00f3ff;
       font-size: 2.5rem;
@@ -110,7 +120,7 @@
 
     .screenshot-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
       margin-top: 15px;
     }
@@ -237,9 +247,10 @@
     </div>
   </div>
 
-  <!-- ===== PRODUCT DETAIL ===== -->
+  <!-- ===== PRODUCT DETAIL WITH CUSTOM ICON ===== -->
   <div class="product-header">
-    <div class="icon">🛡️</div>
+    <!-- CUSTOM ICON (.ICO FILE) -->
+    <img src="guardian.ico" alt="Guardian Icon" class="icon-img">
     <h2>Starq Industriez Security Guardian</h2>
     <div class="price-tag">₹199 – One Time</div>
     <p style="color: #888; margin-top: 10px;">No Subscription. Lifetime Use. No Internet Required.</p>
@@ -274,7 +285,7 @@
     <p><strong>Step 5:</strong> Once launched, insert a USB drive to test the scanner. You're all set!</p>
   </div>
 
-  <!-- 3. SCREENSHOTS (4 Images Added + Click to Zoom) -->
+  <!-- 3. SCREENSHOTS (3 Images – 4th Removed) -->
   <div class="content-section">
     <h3>🖼️ Guardian in Action</h3>
     <div class="screenshot-grid">
@@ -292,11 +303,6 @@
       <div>
         <img src="full controll to user.JPG" alt="Quarantine">
         <div class="screenshot-caption">Full Control: Quarantine</div>
-      </div>
-      <!-- Image 4 (NEW SLOT - CHANGE FILENAME TO YOUR 4TH UPLOADED FILE) -->
-      <div>
-        <img src="USB_History.JPG" alt="USB History">
-        <div class="screenshot-caption">USB History Log</div>
       </div>
     </div>
     <p style="font-size: 0.8rem; color: #555; margin-top: 15px; text-align: center;">🖱️ Click on any image to zoom in.</p>

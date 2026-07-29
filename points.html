@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starq Points – Starq Industriez</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #00f0ff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: #111;
+            padding: 40px 30px;
+            border-radius: 20px;
+            border: 1px solid #1a1a1a;
+            box-shadow: 0 0 60px rgba(0, 240, 255, 0.05);
+            text-align: center;
+        }
+        .logo { font-size: 28px; font-weight: 700; color: #00f0ff; letter-spacing: 2px; margin-bottom: 5px; }
+        .logo span { color: #ff00e5; }
+        .sub { color: #888; font-size: 14px; margin-bottom: 25px; border-bottom: 1px solid #1a1a1a; padding-bottom: 20px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; color: #00f0ff; margin-bottom: 5px; }
+        .form-group input {
+            width: 100%; padding: 12px; background: #1a1a1a;
+            border: 1px solid #2a2a2a; border-radius: 8px;
+            color: #fff; font-size: 15px; outline: none;
+        }
+        .form-group input:focus { border-color: #00f0ff; }
+        .btn {
+            width: 100%; padding: 12px; background: #ff00e5; color: #fff;
+            border: none; border-radius: 8px; font-size: 16px;
+            font-weight: 600; cursor: pointer; margin-top: 5px;
+            transition: 0.3s;
+        }
+        .btn:hover { background: #d400c4; }
+        .btn-secondary {
+            background: #1a1a1a; border: 1px solid #00f0ff; color: #00f0ff;
+        }
+        .btn-secondary:hover { background: #00f0ff; color: #0a0a0a; }
+        .btn-small { padding: 8px 15px; width: auto; font-size: 14px; }
+        .hidden { display: none; }
+        .dashboard { text-align: left; margin-top: 20px; }
+        .stat {
+            display: flex; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid #1a1a1a;
+        }
+        .stat-label { color: #aaa; }
+        .stat-value { color: #00f0ff; font-weight: 600; }
+        .rank-badge {
+            background: #1a1a1a; padding: 4px 12px; border-radius: 50px;
+            font-size: 14px; border: 1px solid #ff00e5; color: #ff00e5;
+        }
+        .trans-list { list-style: none; margin-top: 10px; }
+        .trans-list li {
+            background: #1a1a1a; padding: 8px 12px; margin-bottom: 6px;
+            border-radius: 6px; font-size: 14px; color: #ddd;
+            display: flex; justify-content: space-between;
+        }
+        .trans-list .positive { color: #39ff14; }
+        .trans-list .negative { color: #ff4444; }
+        .message { padding: 10px; border-radius: 6px; margin: 10px 0; background: #1a1a1a; color: #eee; }
+        .footer-text { margin-top: 25px; font-size: 12px; color: #555; }
+        .row { display: flex; gap: 10px; }
+        .row .btn { flex: 1; }
+        .crate-result { margin-top: 15px; padding: 15px; background: #1a1a1a; border-radius: 10px; border: 1px dashed #ff00e5; color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <div class="logo">STARQ <span>INDUSTRIEZ</span></div>
+    <div class="sub">⚡ Earn points. Unlock ranks. Open crates.</div>
+
+    <!-- AUTH SECTION -->
+    <div id="auth-section">
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="••••••••">
+        </div>
+        <div class="row">
+            <button class="btn" id="signup-btn">Sign Up</button>
+            <button class="btn btn-secondary" id="login-btn">Log In</button>
+        </div>
+        <div id="auth-message" class="message hidden"></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard-section" class="hidden">
+        <div class="dashboard">
+            <div class="stat">
+                <span class="stat-label">👤 Welcome, <span id="user-name">User</span></span>
+                <span class="rank-badge" id="rank-display">Bronze</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">⭐ Points</span>
+                <span class="stat-value" id="points-display">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">🏆 Rank</span>
+                <span class="stat-value" id="rank-label">Bronze</span>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-small btn-secondary" id="open-crate">🎁 Mystery Crate (50 pts)</button>
+                <button class="btn btn-small btn-secondary" id="daily-checkin">📅 Daily Check-in (+10)</button>
+                <button class="btn btn-small btn-secondary" id="logout-btn">🚪 Logout</button>
+            </div>
+            <div id="crate-result" class="crate-result hidden"></div>
+            <div id="action-message" class="message hidden"></div>
+            <h3 style="margin-top: 25px; color: #fff;">📜 Recent Activity</h3>
+            <ul class="trans-list" id="transactions-list">
+                <li style="color: #555;">No transactions yet.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-text">🔒 Your data is safe. Powered by Supabase.</div>
+</div>
+
+<script>
+    console.log('✅ Script started');
+
+    // ==============================================
+    // SUPABASE CREDENTIALS
+    // ==============================================
+    const SB_URL = 'https://kowljwcajhtushpsrdxj.supabase.co';
+    const SB_KEY = 'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf';
+    const sb = supabase.createClient(SB_URL, SB_KEY);
+    console.log('✅ Supabase initialized');
+
+    // ----- DOM Elements -----
+    const authSection = document.getElementById('auth-section');
+    const dashboardSection = document.getElementById('dashboard-section');
+    const authMessage = document.getElementById('auth-message');
+    const actionMessage = document.getElementById('action-message');
+    const crateResult = document.getElementById('crate-result');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const userNameSpan = document.getElementById('user-name');
+    const pointsDisplay = document.getElementById('points-display');
+    const rankDisplay = document.getElementById('rank-display');
+    const rankLabel = document.getElementById('rank-label');
+    const transactionsList = document.getElementById('transactions-list');
+
+    // ----- Helper Functions -----
+    function showMessage(element, text, isError = false) {
+        element.classList.remove('hidden');
+        element.textContent = text;
+        element.style.color = isError ? '#ff4444' : '#39ff14';
+        setTimeout(() => { element.classList.add('hidden'); }, 5000);
+    }
+
+    function getRank(points) {
+        if (points >= 1000) return 'Diamond';
+        if (points >= 600) return 'Platinum';
+        if (points >= 300) return 'Gold';
+        if (points >= 100) return 'Silver';
+        return 'Bronze';
+    }
+
+    async function loadDashboard() {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) {
+            dashboardSection.classList.add('hidden');
+            authSection.classList.remove('hidden');
+            return;
+        }
+
+        const { data: profile, error } = await sb
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+        let points = 0;
+        let name = user.email.split('@')[0];
+        if (profile) {
+            points = profile.points || 0;
+            name = profile.name || name;
+        } else {
+            const { error: insertError } = await sb
+                .from('profiles')
+                .insert([{ id: user.id, email: user.email, name: name, points: 10 }]);
+            if (!insertError) {
+                points = 10;
+                await sb.from('transactions').insert([
+                    { user_id: user.id, points: 10, reason: 'Signup Bonus' }
+                ]);
+            }
+        }
+
+        const rank = getRank(points);
+        userNameSpan.textContent = name;
+        pointsDisplay.textContent = points;
+        rankDisplay.textContent = rank;
+        rankLabel.textContent = rank;
+
+        const { data: transactions } = await sb
+            .from('transactions')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(10);
+
+        transactionsList.innerHTML = '';
+        if (!transactions || transactions.length === 0) {
+            transactionsList.innerHTML = '<li style="color: #555;">No transactions yet.</li>';
+        } else {
+            transactions.forEach(t => {
+                const li = document.createElement('li');
+                const sign = t.points >= 0 ? '+' : '';
+                const cls = t.points >= 0 ? 'positive' : 'negative';
+                li.innerHTML = `<span>${t.reason}</span><span class="${cls}">${sign}${t.points}</span>`;
+                transactionsList.appendChild(li);
+            });
+        }
+
+        dashboardSection.classList.remove('hidden');
+        authSection.classList.add('hidden');
+    }
+
+    // ----- SIGN UP -----
+    document.getElementById('signup-btn').addEventListener('click', async (e) => {
+        e.preventDefault();
+        console.log('✅ Sign Up button clicked');
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        if (!email || !password) {
+            showMessage(authMessage, 'Please fill in all fields.', true);
+            return;
+        }
+        const { data, error } = await sb.auth.signUp({ email, password });
+        if (error) {
+            console.error('Signup error:', error);
+            showMessage(authMessage, 'Error: ' + error.message, true);
+        } else {
+            console.log('Signup success:', data);
+            showMessage(authMessage, '✅ Check your email to confirm your account!');
+        }
+    });
+
+    // ----- LOGIN -----
+    document.getElementById('login-btn').addEventListener('click', async (e) => {
+        e.preventDefault();
+        console.log('✅ Login button clicked');
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        if (!email || !password) {
+            showMessage(authMessage, 'Please fill in all fields.', true);
+            return;
+        }
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) {
+            console.error('Login error:', error);
+            showMessage(authMessage, 'Error: ' + error.message, true);
+        } else {
+            console.log('Login success:', data);
+            showMessage(authMessage, '✅ Logged in successfully!');
+            loadDashboard();
+        }
+    });
+
+    // ----- LOGOUT -----
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+        await sb.auth.signOut();
+        dashboardSection.classList.add('hidden');
+        authSection.classList.remove('hidden');
+    });
+
+    // ----- MYSTERY CRATE -----
+    document.getElementById('open-crate').addEventListener('click', async () => {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) { showMessage(actionMessage, 'Please log in first.', true); return; }
+
+        const { data: profile } = await sb
+            .from('profiles')
+            .select('points')
+            .eq('id', user.id)
+            .single();
+
+        if (!profile || profile.points < 50) {
+            showMessage(actionMessage, '❌ Not enough points! You need 50.', true);
+            return;
+        }
+
+        const newPoints = profile.points - 50;
+        await sb.from('profiles').update({ points: newPoints }).eq('id', user.id);
+        await sb.from('transactions').insert([
+            { user_id: user.id, points: -50, reason: 'Mystery Crate' }
+        ]);
+
+        const rewards = [
+            '🎉 You won 30 bonus points!',
+            '🎉 You won a 10% discount code! (Check email)',
+            '🎉 You won 5 bonus points!',
+            '🎉 You won a free Guardian license! (Contact support)',
+            '🎉 You won 50 bonus points!'
+        ];
+        const result = rewards[Math.floor(Math.random() * rewards.length)];
+        if (result.includes('30 bonus')) {
+            await sb.from('profiles').update({ points: newPoints + 30 }).eq('id', user.id);
+            await sb.from('transactions').insert([{ user_id: user.id, points: 30, reason: 'Crate Bonus' }]);
+        } else if (result.includes('50 bonus')) {
+            await sb.from('profiles').update({ points: newPoints + 50 }).eq('id', user.id);
+            await sb.from('transactions').insert([{ user_id: user.id, points: 50, reason: 'Crate Bonus' }]);
+        } else if (result.includes('5 bonus')) {
+            await sb.from('profiles').update({ points: newPoints + 5 }).eq('id', user.id);
+            await sb.from('transactions').insert([{ user_id: user.id, points: 5, reason: 'Crate Bonus' }]);
+        }
+
+        crateResult.classList.remove('hidden');
+        crateResult.textContent = result;
+        loadDashboard();
+        setTimeout(() => { crateResult.classList.add('hidden'); }, 6000);
+    });
+
+    // ----- DAILY CHECK-IN -----
+    document.getElementById('daily-checkin').addEventListener('click', async () => {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) { showMessage(actionMessage, 'Please log in first.', true); return; }
+
+        const today = new Date().toISOString().split('T')[0];
+        const { data: existing } = await sb
+            .from('transactions')
+            .select('created_at')
+            .eq('user_id', user.id)
+            .eq('reason', 'Daily Check-in')
+            .gte('created_at', today)
+            .limit(1);
+
+        if (existing && existing.length > 0) {
+            showMessage(actionMessage, '✅ You already checked in today!', true);
+            return;
+        }
+
+        const { data: profile } = await sb.from('profiles').select('points').eq('id', user.id).single();
+        const newPoints = (profile?.points || 0) + 10;
+        await sb.from('profiles').update({ points: newPoints }).eq('id', user.id);
+        await sb.from('transactions').insert([
+            { user_id: user.id, points: 10, reason: 'Daily Check-in' }
+        ]);
+
+        showMessage(actionMessage, '✅ +10 points for daily check-in!');
+        loadDashboard();
+    });
+
+    // ----- AUTO-LOGIN -----
+    sb.auth.getSession().then(({ data }) => {
+        if (data.session) loadDashboard();
+    });
+
+    sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) loadDashboard();
+        if (event === 'SIGNED_OUT') {
+            dashboardSection.classList.add('hidden');
+            authSection.classList.remove('hidden');
+        }
+    });
+
+    console.log('✅ Starq Points script loaded successfully');
+</script>
+</body>
+</html>

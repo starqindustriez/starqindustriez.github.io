@@ -197,7 +197,6 @@
         </div>
         <div class="row">
             <button class="btn" id="signup-btn">Sign Up</button>
-            <button class="btn" id="signup-btn" onclick="alert('Button clicked!')">Sign Up</button>
             <button class="btn btn-secondary" id="login-btn">Log In</button>
         </div>
         <div id="auth-message" class="message hidden"></div>
@@ -237,12 +236,15 @@
 </div>
 
 <script>
+    console.log('✅ Script started');
+
     // ==============================================
-    // YOUR SUPABASE CREDENTIALS (already pre-filled)
+    // SUPABASE CREDENTIALS
     // ==============================================
     const supabaseUrl = 'https://kowljwcajhtushpsrdxj.supabase.co';
     const supabaseKey = 'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf';
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    console.log('✅ Supabase initialized');
 
     // ----- DOM Elements -----
     const authSection = document.getElementById('auth-section');
@@ -265,7 +267,6 @@
         element.classList.remove('hidden');
         element.textContent = text;
         element.style.color = isError ? '#ff4444' : '#39ff14';
-        if (!isError) element.style.color = '#39ff14';
         setTimeout(() => { element.classList.add('hidden'); }, 5000);
     }
 
@@ -285,17 +286,11 @@
             return;
         }
 
-        // Fetch profile
         const { data: profile, error } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', user.id)
             .single();
-
-        if (error && error.code !== 'PGRST116') {
-            console.error('Error fetching profile:', error);
-            return;
-        }
 
         let points = 0;
         let name = user.email.split('@')[0];
@@ -303,13 +298,11 @@
             points = profile.points || 0;
             name = profile.name || name;
         } else {
-            // Create profile if missing
             const { error: insertError } = await supabase
                 .from('profiles')
                 .insert([{ id: user.id, email: user.email, name: name, points: 10 }]);
             if (!insertError) {
                 points = 10;
-                // Log signup bonus
                 await supabase.from('transactions').insert([
                     { user_id: user.id, points: 10, reason: 'Signup Bonus' }
                 ]);
@@ -322,7 +315,6 @@
         rankDisplay.textContent = rank;
         rankLabel.textContent = rank;
 
-        // Fetch transactions
         const { data: transactions } = await supabase
             .from('transactions')
             .select('*')
@@ -347,41 +339,52 @@
         authSection.classList.add('hidden');
     }
 
-    // ----- AUTH Handlers -----
+    // ----- SIGN UP -----
     document.getElementById('signup-btn').addEventListener('click', async (e) => {
         e.preventDefault();
+        console.log('✅ Sign Up button clicked');
+
         const email = emailInput.value;
         const password = passwordInput.value;
         if (!email || !password) {
             showMessage(authMessage, 'Please fill in all fields.', true);
             return;
         }
+
         const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) {
+            console.error('Signup error:', error);
             showMessage(authMessage, 'Error: ' + error.message, true);
         } else {
+            console.log('Signup success:', data);
             showMessage(authMessage, '✅ Check your email to confirm your account!');
-            // Profile will be created on first login or via trigger.
         }
     });
 
+    // ----- LOGIN -----
     document.getElementById('login-btn').addEventListener('click', async (e) => {
         e.preventDefault();
+        console.log('✅ Login button clicked');
+
         const email = emailInput.value;
         const password = passwordInput.value;
         if (!email || !password) {
             showMessage(authMessage, 'Please fill in all fields.', true);
             return;
         }
+
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
+            console.error('Login error:', error);
             showMessage(authMessage, 'Error: ' + error.message, true);
         } else {
+            console.log('Login success:', data);
             showMessage(authMessage, '✅ Logged in successfully!');
             loadDashboard();
         }
     });
 
+    // ----- LOGOUT -----
     document.getElementById('logout-btn').addEventListener('click', async () => {
         await supabase.auth.signOut();
         dashboardSection.classList.add('hidden');
@@ -404,14 +407,12 @@
             return;
         }
 
-        // Deduct 50 points
         const newPoints = profile.points - 50;
         await supabase.from('profiles').update({ points: newPoints }).eq('id', user.id);
         await supabase.from('transactions').insert([
             { user_id: user.id, points: -50, reason: 'Mystery Crate' }
         ]);
 
-        // Random rewards
         const rewards = [
             '🎉 You won 30 bonus points!',
             '🎉 You won a 10% discount code! (Check email)',
@@ -420,7 +421,6 @@
             '🎉 You won 50 bonus points!'
         ];
         const result = rewards[Math.floor(Math.random() * rewards.length)];
-        // Award bonus if points based
         if (result.includes('30 bonus')) {
             await supabase.from('profiles').update({ points: newPoints + 30 }).eq('id', user.id);
             await supabase.from('transactions').insert([{ user_id: user.id, points: 30, reason: 'Crate Bonus' }]);
@@ -443,7 +443,6 @@
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) { showMessage(actionMessage, 'Please log in first.', true); return; }
 
-        // Check if already checked in today (basic check using transactions)
         const today = new Date().toISOString().split('T')[0];
         const { data: existing } = await supabase
             .from('transactions')
@@ -458,7 +457,6 @@
             return;
         }
 
-        // Add 10 points
         const { data: profile } = await supabase.from('profiles').select('points').eq('id', user.id).single();
         const newPoints = (profile?.points || 0) + 10;
         await supabase.from('profiles').update({ points: newPoints }).eq('id', user.id);
@@ -477,7 +475,6 @@
         }
     });
 
-    // Listen for auth state changes
     supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' && session) {
             loadDashboard();
@@ -487,6 +484,8 @@
             authSection.classList.remove('hidden');
         }
     });
+
+    console.log('✅ Starq Points script loaded successfully');
 </script>
 
 </body>

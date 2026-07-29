@@ -243,7 +243,7 @@
     // ==============================================
     const supabaseUrl = 'https://kowljwcajhtushpsrdxj.supabase.co';
     const supabaseKey = 'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    const sb = supabase.createClient(supabaseUrl, supabaseKey);
     console.log('✅ Supabase initialized');
 
     // ----- DOM Elements -----
@@ -279,14 +279,14 @@
     }
 
     async function loadDashboard() {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await sb.auth.getUser();
         if (!user) {
             dashboardSection.classList.add('hidden');
             authSection.classList.remove('hidden');
             return;
         }
 
-        const { data: profile, error } = await supabase
+        const { data: profile, error } = await sb
             .from('profiles')
             .select('*')
             .eq('id', user.id)
@@ -298,12 +298,12 @@
             points = profile.points || 0;
             name = profile.name || name;
         } else {
-            const { error: insertError } = await supabase
+            const { error: insertError } = await sb
                 .from('profiles')
                 .insert([{ id: user.id, email: user.email, name: name, points: 10 }]);
             if (!insertError) {
                 points = 10;
-                await supabase.from('transactions').insert([
+                await sb.from('transactions').insert([
                     { user_id: user.id, points: 10, reason: 'Signup Bonus' }
                 ]);
             }
@@ -315,7 +315,7 @@
         rankDisplay.textContent = rank;
         rankLabel.textContent = rank;
 
-        const { data: transactions } = await supabase
+        const { data: transactions } = await sb
             .from('transactions')
             .select('*')
             .eq('user_id', user.id)
@@ -351,7 +351,7 @@
             return;
         }
 
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await sb.auth.signUp({ email, password });
         if (error) {
             console.error('Signup error:', error);
             showMessage(authMessage, 'Error: ' + error.message, true);
@@ -373,7 +373,7 @@
             return;
         }
 
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
         if (error) {
             console.error('Login error:', error);
             showMessage(authMessage, 'Error: ' + error.message, true);
@@ -386,17 +386,17 @@
 
     // ----- LOGOUT -----
     document.getElementById('logout-btn').addEventListener('click', async () => {
-        await supabase.auth.signOut();
+        await sb.auth.signOut();
         dashboardSection.classList.add('hidden');
         authSection.classList.remove('hidden');
     });
 
     // ----- MYSTERY CRATE -----
     document.getElementById('open-crate').addEventListener('click', async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await sb.auth.getUser();
         if (!user) { showMessage(actionMessage, 'Please log in first.', true); return; }
 
-        const { data: profile } = await supabase
+        const { data: profile } = await sb
             .from('profiles')
             .select('points')
             .eq('id', user.id)
@@ -408,8 +408,8 @@
         }
 
         const newPoints = profile.points - 50;
-        await supabase.from('profiles').update({ points: newPoints }).eq('id', user.id);
-        await supabase.from('transactions').insert([
+        await sb.from('profiles').update({ points: newPoints }).eq('id', user.id);
+        await sb.from('transactions').insert([
             { user_id: user.id, points: -50, reason: 'Mystery Crate' }
         ]);
 
@@ -422,14 +422,14 @@
         ];
         const result = rewards[Math.floor(Math.random() * rewards.length)];
         if (result.includes('30 bonus')) {
-            await supabase.from('profiles').update({ points: newPoints + 30 }).eq('id', user.id);
-            await supabase.from('transactions').insert([{ user_id: user.id, points: 30, reason: 'Crate Bonus' }]);
+            await sb.from('profiles').update({ points: newPoints + 30 }).eq('id', user.id);
+            await sb.from('transactions').insert([{ user_id: user.id, points: 30, reason: 'Crate Bonus' }]);
         } else if (result.includes('50 bonus')) {
-            await supabase.from('profiles').update({ points: newPoints + 50 }).eq('id', user.id);
-            await supabase.from('transactions').insert([{ user_id: user.id, points: 50, reason: 'Crate Bonus' }]);
+            await sb.from('profiles').update({ points: newPoints + 50 }).eq('id', user.id);
+            await sb.from('transactions').insert([{ user_id: user.id, points: 50, reason: 'Crate Bonus' }]);
         } else if (result.includes('5 bonus')) {
-            await supabase.from('profiles').update({ points: newPoints + 5 }).eq('id', user.id);
-            await supabase.from('transactions').insert([{ user_id: user.id, points: 5, reason: 'Crate Bonus' }]);
+            await sb.from('profiles').update({ points: newPoints + 5 }).eq('id', user.id);
+            await sb.from('transactions').insert([{ user_id: user.id, points: 5, reason: 'Crate Bonus' }]);
         }
 
         crateResult.classList.remove('hidden');
@@ -440,11 +440,11 @@
 
     // ----- DAILY CHECK-IN -----
     document.getElementById('daily-checkin').addEventListener('click', async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await sb.auth.getUser();
         if (!user) { showMessage(actionMessage, 'Please log in first.', true); return; }
 
         const today = new Date().toISOString().split('T')[0];
-        const { data: existing } = await supabase
+        const { data: existing } = await sb
             .from('transactions')
             .select('created_at')
             .eq('user_id', user.id)
@@ -457,10 +457,10 @@
             return;
         }
 
-        const { data: profile } = await supabase.from('profiles').select('points').eq('id', user.id).single();
+        const { data: profile } = await sb.from('profiles').select('points').eq('id', user.id).single();
         const newPoints = (profile?.points || 0) + 10;
-        await supabase.from('profiles').update({ points: newPoints }).eq('id', user.id);
-        await supabase.from('transactions').insert([
+        await sb.from('profiles').update({ points: newPoints }).eq('id', user.id);
+        await sb.from('transactions').insert([
             { user_id: user.id, points: 10, reason: 'Daily Check-in' }
         ]);
 
@@ -469,13 +469,13 @@
     });
 
     // ----- AUTO-LOGIN CHECK -----
-    supabase.auth.getSession().then(({ data }) => {
+    sb.auth.getSession().then(({ data }) => {
         if (data.session) {
             loadDashboard();
         }
     });
 
-    supabase.auth.onAuthStateChange((event, session) => {
+    sb.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' && session) {
             loadDashboard();
         }

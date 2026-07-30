@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Products – STARQ INDUSTRIEZ</title>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -183,23 +181,21 @@
   <div class="nav-links">
     <a href="home.html" class="active">Home</a>
     <a href="about.html">About</a>
-    <!-- Dashboard link will be added later -->
   </div>
 
   <!-- ===== PRODUCT GRID ===== -->
   <div class="grid">
 
-    <!-- Product 1: Guardian (Clickable Tile -> Opens Detail Page) -->
-<a href="guardian.html" target="_blank" style="text-decoration: none; color: inherit; display: block;">
-  <div class="card">
-    <div class="icon">🛡️</div>
-    <h3>Security Guardian</h3>
-    <div class="desc">USB virus scanner, real-time monitor, USB history tracker, and threat counter.</div>
-    <div class="price">₹199</div>
-    <!-- "Buy Now" button REMOVED. Click the tile to learn more -->
-    <div style="margin-top: 10px; color: #00f3ff; font-size: 0.8rem; border-top: 1px dashed #333; padding-top: 10px;">📖 Click to view details & download</div>
-  </div>
-</a>
+    <!-- Product 1: Guardian -->
+    <a href="guardian.html" target="_blank" style="text-decoration: none; color: inherit; display: block;">
+      <div class="card">
+        <div class="icon">🛡️</div>
+        <h3>Security Guardian</h3>
+        <div class="desc">USB virus scanner, real-time monitor, USB history tracker, and threat counter.</div>
+        <div class="price">₹199</div>
+        <div style="margin-top: 10px; color: #00f3ff; font-size: 0.8rem; border-top: 1px dashed #333; padding-top: 10px;">📖 Click to view details & download</div>
+      </div>
+    </a>
 
     <!-- Product 2: YT Downloader -->
     <div class="card">
@@ -242,56 +238,82 @@
 </div>
 
 <script>
-  // ===================== FIREBASE CONFIG =====================
-  // 🔥 PASTE YOUR EXACT FIREBASE CONFIG HERE (SAME AS INDEX.HTML)
-  const firebaseConfig = {
-    apiKey: "AIzaSyDCE1PidwUCHPrccgcEn_EEr07IGB49n9A",
-    authDomain: "starq-industriez.firebaseapp.com",
-    projectId: "starq-industriez",
-    storageBucket: "starq-industriez.firebasestorage.app",
-    messagingSenderId: "841933358955",
-    appId: "1:841933358955:web:8c7d87b2e8ff4ed42d6e2e"
-  };
+  // ==============================================
+  // SUPABASE CONFIG
+  // ==============================================
+  const supabaseUrl = 'https://kowljwcajhtushpsrdxj.supabase.co';
+  const supabaseKey = 'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
+  // ==============================================
+  // DOM REFS
+  // ==============================================
   const userNameDisplay = document.getElementById('userNameDisplay');
   const starzDisplay = document.getElementById('starzDisplay');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  // ===================== PROTECT PAGE: Redirect if not logged in =====================
-  auth.onAuthStateChanged(async (user) => {
+  // ==============================================
+  // PROTECT PAGE & LOAD USER DATA
+  // ==============================================
+  async function loadUserData() {
+    const { data: { user } } = await supabase.auth.getUser();
+
     if (!user) {
-      // No user → send them to login page
-      window.location.href = 'index.html';
+      // No user → redirect to login
+      window.location.href = 'https://starqindustriez.github.io/index.html';
       return;
     }
 
-    // User is logged in → show their info
-    userNameDisplay.textContent = user.displayName || 'User';
+    // Show user name (use email as fallback)
+    userNameDisplay.textContent = user.email.split('@')[0] || 'User';
 
-    // Fetch Starz balance from Firestore
+    // Fetch points from Supabase
     try {
-      const doc = await db.collection('users').doc(user.uid).get();
-      if (doc.exists) {
-        const data = doc.data();
-        const starz = data.starzBalance || 0;
-        starzDisplay.textContent = `⭐ ${starz}`;
-      } else {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('points')
+        .eq('id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
         starzDisplay.textContent = '⭐ 0';
+        return;
       }
+
+      const points = profile?.points || 0;
+      starzDisplay.textContent = `⭐ ${points}`;
+
     } catch (err) {
-      console.error('Error fetching Starz:', err);
+      console.error('Error loading points:', err);
       starzDisplay.textContent = '⭐ 0';
     }
+  }
+
+  // ==============================================
+  // LOGOUT
+  // ==============================================
+  logoutBtn.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = 'https://starqindustriez.github.io/index.html';
   });
 
-  // ===================== LOGOUT =====================
-  logoutBtn.addEventListener('click', async () => {
-    await auth.signOut();
-    window.location.href = 'index.html';
+  // ==============================================
+  // RUN ON PAGE LOAD
+  // ==============================================
+  loadUserData();
+
+  // ==============================================
+  // AUTO-REDIRECT ON AUTH CHANGE (if logged out elsewhere)
+  // ==============================================
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_OUT') {
+      window.location.href = 'https://starqindustriez.github.io/index.html';
+    }
+    if (event === 'SIGNED_IN' && session) {
+      // Refresh user data when they log in again (or session restores)
+      loadUserData();
+    }
   });
 </script>
 </body>

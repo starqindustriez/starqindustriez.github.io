@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login – STARQ INDUSTRIEZ</title>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -179,21 +177,16 @@
 </div>
 
 <script>
-  // ===================== FIREBASE CONFIG =====================
-  const firebaseConfig = {
-    apiKey: "AIzaSyDCE1PidwUCHPrccgcEn_EEr07IGB49n9A",
-    authDomain: "starq-industriez.firebaseapp.com",
-    projectId: "starq-industriez",
-    storageBucket: "starq-industriez.firebasestorage.app",
-    messagingSenderId: "841933358955",
-    appId: "1:841933358955:web:8c7d87b2e8ff4ed42d6e2e"
-  };
+  // ==============================================
+  // SUPABASE CONFIG
+  // ==============================================
+  const supabaseUrl = 'https://kowljwcajhtushpsrdxj.supabase.co';
+  const supabaseKey = 'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  // ===================== DOM REFS =====================
+  // ==============================================
+  // DOM REFS
+  // ==============================================
   const loginForm = document.getElementById('loginForm');
   const signupForm = document.getElementById('signupForm');
   const loginToggle = document.getElementById('loginToggle');
@@ -214,7 +207,9 @@
   const signupError = document.getElementById('signupError');
   const signupSuccess = document.getElementById('signupSuccess');
 
-  // ===================== TOGGLE =====================
+  // ==============================================
+  // TOGGLE LOGIN / SIGNUP
+  // ==============================================
   function showLogin() {
     loginForm.classList.remove('hidden');
     signupForm.classList.add('hidden');
@@ -236,6 +231,7 @@
   loginToggle.addEventListener('click', showLogin);
   signupToggle.addEventListener('click', showSignup);
   switchLink.addEventListener('click', showSignup);
+
   function clearMessages() {
     loginError.textContent = '';
     loginSuccess.textContent = '';
@@ -243,26 +239,34 @@
     signupSuccess.textContent = '';
   }
 
-  // ===================== LOGIN =====================
+  // ==============================================
+  // LOGIN
+  // ==============================================
   loginBtn.addEventListener('click', async () => {
     const email = loginEmail.value.trim();
     const password = loginPassword.value.trim();
     loginError.textContent = '';
     loginSuccess.textContent = '';
+
     if (!email || !password) {
       loginError.textContent = 'Please enter email and password.';
       return;
     }
-    try {
-      await auth.signInWithEmailAndPassword(email, password);
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      loginError.textContent = error.message;
+    } else {
       loginSuccess.textContent = '✅ Login successful! Redirecting...';
-      setTimeout(() => { window.location.href = 'home.html'; }, 1000);
-    } catch (err) {
-      loginError.textContent = err.message;
+      setTimeout(() => {
+        window.location.href = 'https://starqindustriez.github.io/points.html';
+      }, 1000);
     }
   });
 
-  // ===================== SIGN-UP (WITH FIRESTORE WRITE – FIXED) =====================
+  // ==============================================
+  // SIGN-UP (WITH SUPABASE + POINTS)
+  // ==============================================
   signupBtn.addEventListener('click', async () => {
     const name = signupName.value.trim();
     const email = signupEmail.value.trim();
@@ -279,38 +283,61 @@
       return;
     }
 
-    try {
-      // 1. Create Auth User
-      const userCred = await auth.createUserWithEmailAndPassword(email, password);
-      const user = userCred.user;
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      signupError.textContent = error.message;
+      return;
+    }
 
-      // 2. Update display name
-      await user.updateProfile({ displayName: name });
+    const user = data.user;
+    if (!user) {
+      signupError.textContent = 'Sign-up failed. Please try again.';
+      return;
+    }
 
-      // 3. ✅ WRITE TO FIRESTORE (CORRECTED)
-      await db.collection('users').doc(user.uid).set({
-        name: name,
+    // ✅ Write to Supabase 'profiles' table
+    const { error: insertError } = await supabase
+      .from('profiles')
+      .insert([{
+        id: user.id,
         email: email,
-        starzBalance: 10,          // <-- CORRECT field name (with 'z')
-        totalSpent: 0,
-        rank: 'Cadet',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+        name: name,
+        points: 10
+      }]);
 
-      signupSuccess.textContent = '✅ Account created! You earned 10 Starz! Redirecting...';
-      setTimeout(() => {
-        window.location.href = 'home.html';
-      }, 1500);
-    } catch (err) {
-      signupError.textContent = '❌ ' + err.message;
-      console.error('Signup error:', err);
+    if (insertError) {
+      signupError.textContent = 'Error saving profile: ' + insertError.message;
+      return;
+    }
+
+    // ✅ Log the signup bonus transaction
+    await supabase
+      .from('transactions')
+      .insert([{
+        user_id: user.id,
+        points: 10,
+        reason: 'Signup Bonus'
+      }]);
+
+    signupSuccess.textContent = '✅ Account created! You earned 10 Starq Points! Check your email to confirm.';
+    setTimeout(() => {
+      window.location.href = 'https://starqindustriez.github.io/points.html';
+    }, 2000);
+  });
+
+  // ==============================================
+  // AUTO-REDIRECT IF ALREADY LOGGED IN
+  // ==============================================
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) {
+      window.location.href = 'https://starqindustriez.github.io/points.html';
     }
   });
 
-  // ===================== AUTO-REDIRECT =====================
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      window.location.href = 'home.html';
+  // Listen for auth state changes
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      window.location.href = 'https://starqindustriez.github.io/points.html';
     }
   });
 </script>

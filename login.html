@@ -20,10 +20,11 @@
   <div id="signupMessage"></div>
 
   <script>
-    // ✅ Supabase config
-    const supabaseUrl = 'https://kowljwcajhtushpsrdxj.supabase.co';
-    const supabaseKey = 'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    // ✅ Use a different variable name (sb) to avoid conflict
+    const sb = supabase.createClient(
+      'https://kowljwcajhtushpsrdxj.supabase.co',
+      'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf'
+    );
 
     // ----- LOGIN -----
     document.getElementById('loginBtn').addEventListener('click', async function() {
@@ -37,7 +38,7 @@
         return;
       }
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) {
         msg.innerText = '❌ ' + error.message;
         msg.style.color = 'red';
@@ -68,7 +69,7 @@
         return;
       }
 
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { data, error } = await sb.auth.signUp({ email, password });
       if (error) {
         msg.innerText = '❌ ' + error.message;
         msg.style.color = 'red';
@@ -83,14 +84,14 @@
       }
 
       // Create profile
-      await supabase.from('profiles').insert([{
+      await sb.from('profiles').insert([{
         id: user.id,
         email: email,
         name: name,
         points: 10
       }]);
 
-      await supabase.from('transactions').insert([{
+      await sb.from('transactions').insert([{
         user_id: user.id,
         points: 10,
         reason: 'Signup Bonus'

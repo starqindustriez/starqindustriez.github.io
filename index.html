@@ -132,8 +132,8 @@
   </div>
 
   <div class="toggle-btns">
-    <button id="loginToggle" class="active">Login</button>
-    <button id="signupToggle" onclick="alert('Sign Up tab clicked!')">Sign Up</button>
+    <button id="loginToggle" class="active" onclick="showLogin()">Login</button>
+    <button id="signupToggle" onclick="showSignup()">Sign Up</button>
   </div>
 
   <!-- ===== LOGIN FORM ===== -->
@@ -146,7 +146,7 @@
       <label>Password</label>
       <input type="password" id="loginPassword" placeholder="••••••••" />
     </div>
-    <button class="btn-primary" id="loginBtn">Login</button>
+    <button class="btn-primary" id="loginBtn" onclick="handleLogin()">Login</button>
     <div id="loginError" class="error-msg"></div>
     <div id="loginSuccess" class="success-msg"></div>
   </div>
@@ -165,144 +165,115 @@
       <label>Password</label>
       <input type="password" id="signupPassword" placeholder="•••••••• (min 6 chars)" />
     </div>
-    <button class="btn-primary" id="signupBtn">Create Account</button>
+    <button class="btn-primary" id="signupBtn" onclick="handleSignup()">Create Account</button>
     <div id="signupError" class="error-msg"></div>
     <div id="signupSuccess" class="success-msg"></div>
   </div>
 
   <div class="switch-text">
-    Don't have an account? <span id="switchLink">Sign Up</span>
+    Don't have an account? <span id="switchLink" onclick="showSignup()">Sign Up</span>
   </div>
   <div class="footer-text">© 2026 Starq Industriez</div>
 </div>
 
 <script>
   // ==============================================
-  // WAIT FOR DOM TO LOAD (Fixes the "not responding" issue)
+  // GLOBAL TOGGLE FUNCTIONS (Accessible from HTML onclick)
+  // ==============================================
+  function showLogin() {
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('signupForm').classList.add('hidden');
+    document.getElementById('loginToggle').classList.add('active');
+    document.getElementById('signupToggle').classList.remove('active');
+    document.getElementById('switchLink').textContent = 'Sign Up';
+    document.getElementById('switchLink').onclick = showSignup;
+    // Clear messages
+    document.getElementById('loginError').textContent = '';
+    document.getElementById('loginSuccess').textContent = '';
+    document.getElementById('signupError').textContent = '';
+    document.getElementById('signupSuccess').textContent = '';
+  }
+
+  function showSignup() {
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('signupForm').classList.remove('hidden');
+    document.getElementById('signupToggle').classList.add('active');
+    document.getElementById('loginToggle').classList.remove('active');
+    document.getElementById('switchLink').textContent = 'Login';
+    document.getElementById('switchLink').onclick = showLogin;
+    // Clear messages
+    document.getElementById('loginError').textContent = '';
+    document.getElementById('loginSuccess').textContent = '';
+    document.getElementById('signupError').textContent = '';
+    document.getElementById('signupSuccess').textContent = '';
+  }
+
+  // ==============================================
+  // SUPABASE CONFIG & HANDLERS
   // ==============================================
   document.addEventListener('DOMContentLoaded', function() {
 
-    // ==============================================
-    // SUPABASE CONFIG
-    // ==============================================
     const supabaseUrl = 'https://kowljwcajhtushpsrdxj.supabase.co';
     const supabaseKey = 'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf';
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    // ==============================================
-    // DOM REFS
-    // ==============================================
-    const loginForm = document.getElementById('loginForm');
-    const signupForm = document.getElementById('signupForm');
-    const loginToggle = document.getElementById('loginToggle');
-    const signupToggle = document.getElementById('signupToggle');
-    const switchLink = document.getElementById('switchLink');
-
-    const loginEmail = document.getElementById('loginEmail');
-    const loginPassword = document.getElementById('loginPassword');
-    const loginBtn = document.getElementById('loginBtn');
-    const loginError = document.getElementById('loginError');
-    const loginSuccess = document.getElementById('loginSuccess');
-
-    const signupName = document.getElementById('signupName');
-    const signupEmail = document.getElementById('signupEmail');
-    const signupPassword = document.getElementById('signupPassword');
-    const signupBtn = document.getElementById('signupBtn');
-    const signupError = document.getElementById('signupError');
-    const signupSuccess = document.getElementById('signupSuccess');
-
-    // ==============================================
-    // CLEAN TOGGLE LOGIC (Fixed)
-    // ==============================================
-    function clearMessages() {
-      loginError.textContent = '';
-      loginSuccess.textContent = '';
-      signupError.textContent = '';
-      signupSuccess.textContent = '';
-    }
-
-    function showLogin() {
-      loginForm.classList.remove('hidden');
-      signupForm.classList.add('hidden');
-      loginToggle.classList.add('active');
-      signupToggle.classList.remove('active');
-      switchLink.textContent = 'Sign Up';
-      switchLink.onclick = showSignup; // Reassign click handler
-      clearMessages();
-    }
-
-    function showSignup() {
-      loginForm.classList.add('hidden');
-      signupForm.classList.remove('hidden');
-      signupToggle.classList.add('active');
-      loginToggle.classList.remove('active');
-      switchLink.textContent = 'Login';
-      switchLink.onclick = showLogin; // Reassign click handler
-      clearMessages();
-    }
-
-    // Attach tab listeners
-    loginToggle.addEventListener('click', showLogin);
-    signupToggle.addEventListener('click', showSignup);
-    switchLink.addEventListener('click', showSignup); // Initial state
-
-    // ==============================================
-    // LOGIN
-    // ==============================================
-    loginBtn.addEventListener('click', async () => {
-      const email = loginEmail.value.trim();
-      const password = loginPassword.value.trim();
-      loginError.textContent = '';
-      loginSuccess.textContent = '';
+    // ----- Login Handler -----
+    window.handleLogin = async function() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const errorDiv = document.getElementById('loginError');
+      const successDiv = document.getElementById('loginSuccess');
+      errorDiv.textContent = '';
+      successDiv.textContent = '';
 
       if (!email || !password) {
-        loginError.textContent = 'Please enter email and password.';
+        errorDiv.textContent = 'Please enter email and password.';
         return;
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        loginError.textContent = error.message;
+        errorDiv.textContent = error.message;
       } else {
-        loginSuccess.textContent = '✅ Login successful! Redirecting...';
+        successDiv.textContent = '✅ Login successful! Redirecting...';
         setTimeout(() => {
-          window.location.href = 'https://starqindustriez.github.io/points.html';
+          window.location.href = 'https://starqindustriez.github.io/home.html';
         }, 1000);
       }
-    });
+    };
 
-    // ==============================================
-    // SIGN-UP
-    // ==============================================
-    signupBtn.addEventListener('click', async () => {
-      const name = signupName.value.trim();
-      const email = signupEmail.value.trim();
-      const password = signupPassword.value.trim();
-      signupError.textContent = '';
-      signupSuccess.textContent = '';
+    // ----- Signup Handler -----
+    window.handleSignup = async function() {
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value.trim();
+      const errorDiv = document.getElementById('signupError');
+      const successDiv = document.getElementById('signupSuccess');
+      errorDiv.textContent = '';
+      successDiv.textContent = '';
 
       if (!name || !email || !password) {
-        signupError.textContent = 'Please fill in all fields.';
+        errorDiv.textContent = 'Please fill in all fields.';
         return;
       }
       if (password.length < 6) {
-        signupError.textContent = 'Password must be at least 6 characters.';
+        errorDiv.textContent = 'Password must be at least 6 characters.';
         return;
       }
 
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) {
-        signupError.textContent = error.message;
+        errorDiv.textContent = error.message;
         return;
       }
 
       const user = data.user;
       if (!user) {
-        signupError.textContent = 'Sign-up failed. Please try again.';
+        errorDiv.textContent = 'Sign-up failed. Please try again.';
         return;
       }
 
-      // ✅ Write to Supabase 'profiles' table
+      // Write to Supabase 'profiles' table
       const { error: insertError } = await supabase
         .from('profiles')
         .insert([{
@@ -313,11 +284,11 @@
         }]);
 
       if (insertError) {
-        signupError.textContent = 'Error saving profile: ' + insertError.message;
+        errorDiv.textContent = 'Error saving profile: ' + insertError.message;
         return;
       }
 
-      // ✅ Log the signup bonus transaction
+      // Log signup bonus
       await supabase
         .from('transactions')
         .insert([{
@@ -326,24 +297,22 @@
           reason: 'Signup Bonus'
         }]);
 
-      signupSuccess.textContent = '✅ Account created! You earned 10 Starq Points! Check your email to confirm.';
+      successDiv.textContent = '✅ Account created! You earned 10 Starq Points! Check your email to confirm.';
       setTimeout(() => {
-        window.location.href = 'https://starqindustriez.github.io/points.html';
+        window.location.href = 'https://starqindustriez.github.io/home.html';
       }, 2000);
-    });
+    };
 
-    // ==============================================
-    // AUTO-REDIRECT IF ALREADY LOGGED IN
-    // ==============================================
+    // ----- Auto-redirect if already logged in -----
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
-        window.location.href = 'https://starqindustriez.github.io/points.html';
+        window.location.href = 'https://starqindustriez.github.io/home.html';
       }
     });
 
     supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        window.location.href = 'https://starqindustriez.github.io/points.html';
+        window.location.href = 'https://starqindustriez.github.io/home.html';
       }
     });
 

@@ -171,175 +171,183 @@
   </div>
 
   <div class="switch-text">
-    <span id="switchAction">Don't have an account? <span id="switchLink">Sign Up</span></span>
+    Don't have an account? <span id="switchLink">Sign Up</span>
   </div>
   <div class="footer-text">© 2026 Starq Industriez</div>
 </div>
 
 <script>
   // ==============================================
-  // SUPABASE CONFIG
+  // WAIT FOR DOM TO LOAD (Fixes the "not responding" issue)
   // ==============================================
-  const supabaseUrl = 'https://kowljwcajhtushpsrdxj.supabase.co';
-  const supabaseKey = 'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf';
-  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  document.addEventListener('DOMContentLoaded', function() {
 
-  // ==============================================
-  // DOM REFS
-  // ==============================================
-  const loginForm = document.getElementById('loginForm');
-  const signupForm = document.getElementById('signupForm');
-  const loginToggle = document.getElementById('loginToggle');
-  const signupToggle = document.getElementById('signupToggle');
-  const switchLink = document.getElementById('switchLink');
-  const switchAction = document.getElementById('switchAction');
+    // ==============================================
+    // SUPABASE CONFIG
+    // ==============================================
+    const supabaseUrl = 'https://kowljwcajhtushpsrdxj.supabase.co';
+    const supabaseKey = 'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-  const loginEmail = document.getElementById('loginEmail');
-  const loginPassword = document.getElementById('loginPassword');
-  const loginBtn = document.getElementById('loginBtn');
-  const loginError = document.getElementById('loginError');
-  const loginSuccess = document.getElementById('loginSuccess');
+    // ==============================================
+    // DOM REFS
+    // ==============================================
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const loginToggle = document.getElementById('loginToggle');
+    const signupToggle = document.getElementById('signupToggle');
+    const switchLink = document.getElementById('switchLink');
 
-  const signupName = document.getElementById('signupName');
-  const signupEmail = document.getElementById('signupEmail');
-  const signupPassword = document.getElementById('signupPassword');
-  const signupBtn = document.getElementById('signupBtn');
-  const signupError = document.getElementById('signupError');
-  const signupSuccess = document.getElementById('signupSuccess');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+    const loginSuccess = document.getElementById('loginSuccess');
 
-  // ==============================================
-  // TOGGLE LOGIN / SIGNUP
-  // ==============================================
-  function showLogin() {
-    loginForm.classList.remove('hidden');
-    signupForm.classList.add('hidden');
-    loginToggle.classList.add('active');
-    signupToggle.classList.remove('active');
-    switchAction.innerHTML = `Don't have an account? <span id="switchLink">Sign Up</span>`;
-    document.getElementById('switchLink').addEventListener('click', showSignup);
-    clearMessages();
-  }
-  function showSignup() {
-    loginForm.classList.add('hidden');
-    signupForm.classList.remove('hidden');
-    signupToggle.classList.add('active');
-    loginToggle.classList.remove('active');
-    switchAction.innerHTML = `Already have an account? <span id="switchLink">Login</span>`;
-    document.getElementById('switchLink').addEventListener('click', showLogin);
-    clearMessages();
-  }
-  loginToggle.addEventListener('click', showLogin);
-  signupToggle.addEventListener('click', showSignup);
-  switchLink.addEventListener('click', showSignup);
+    const signupName = document.getElementById('signupName');
+    const signupEmail = document.getElementById('signupEmail');
+    const signupPassword = document.getElementById('signupPassword');
+    const signupBtn = document.getElementById('signupBtn');
+    const signupError = document.getElementById('signupError');
+    const signupSuccess = document.getElementById('signupSuccess');
 
-  function clearMessages() {
-    loginError.textContent = '';
-    loginSuccess.textContent = '';
-    signupError.textContent = '';
-    signupSuccess.textContent = '';
-  }
-
-  // ==============================================
-  // LOGIN
-  // ==============================================
-  loginBtn.addEventListener('click', async () => {
-    const email = loginEmail.value.trim();
-    const password = loginPassword.value.trim();
-    loginError.textContent = '';
-    loginSuccess.textContent = '';
-
-    if (!email || !password) {
-      loginError.textContent = 'Please enter email and password.';
-      return;
+    // ==============================================
+    // CLEAN TOGGLE LOGIC (Fixed)
+    // ==============================================
+    function clearMessages() {
+      loginError.textContent = '';
+      loginSuccess.textContent = '';
+      signupError.textContent = '';
+      signupSuccess.textContent = '';
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      loginError.textContent = error.message;
-    } else {
-      loginSuccess.textContent = '✅ Login successful! Redirecting...';
+    function showLogin() {
+      loginForm.classList.remove('hidden');
+      signupForm.classList.add('hidden');
+      loginToggle.classList.add('active');
+      signupToggle.classList.remove('active');
+      switchLink.textContent = 'Sign Up';
+      switchLink.onclick = showSignup; // Reassign click handler
+      clearMessages();
+    }
+
+    function showSignup() {
+      loginForm.classList.add('hidden');
+      signupForm.classList.remove('hidden');
+      signupToggle.classList.add('active');
+      loginToggle.classList.remove('active');
+      switchLink.textContent = 'Login';
+      switchLink.onclick = showLogin; // Reassign click handler
+      clearMessages();
+    }
+
+    // Attach tab listeners
+    loginToggle.addEventListener('click', showLogin);
+    signupToggle.addEventListener('click', showSignup);
+    switchLink.addEventListener('click', showSignup); // Initial state
+
+    // ==============================================
+    // LOGIN
+    // ==============================================
+    loginBtn.addEventListener('click', async () => {
+      const email = loginEmail.value.trim();
+      const password = loginPassword.value.trim();
+      loginError.textContent = '';
+      loginSuccess.textContent = '';
+
+      if (!email || !password) {
+        loginError.textContent = 'Please enter email and password.';
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        loginError.textContent = error.message;
+      } else {
+        loginSuccess.textContent = '✅ Login successful! Redirecting...';
+        setTimeout(() => {
+          window.location.href = 'https://starqindustriez.github.io/points.html';
+        }, 1000);
+      }
+    });
+
+    // ==============================================
+    // SIGN-UP
+    // ==============================================
+    signupBtn.addEventListener('click', async () => {
+      const name = signupName.value.trim();
+      const email = signupEmail.value.trim();
+      const password = signupPassword.value.trim();
+      signupError.textContent = '';
+      signupSuccess.textContent = '';
+
+      if (!name || !email || !password) {
+        signupError.textContent = 'Please fill in all fields.';
+        return;
+      }
+      if (password.length < 6) {
+        signupError.textContent = 'Password must be at least 6 characters.';
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        signupError.textContent = error.message;
+        return;
+      }
+
+      const user = data.user;
+      if (!user) {
+        signupError.textContent = 'Sign-up failed. Please try again.';
+        return;
+      }
+
+      // ✅ Write to Supabase 'profiles' table
+      const { error: insertError } = await supabase
+        .from('profiles')
+        .insert([{
+          id: user.id,
+          email: email,
+          name: name,
+          points: 10
+        }]);
+
+      if (insertError) {
+        signupError.textContent = 'Error saving profile: ' + insertError.message;
+        return;
+      }
+
+      // ✅ Log the signup bonus transaction
+      await supabase
+        .from('transactions')
+        .insert([{
+          user_id: user.id,
+          points: 10,
+          reason: 'Signup Bonus'
+        }]);
+
+      signupSuccess.textContent = '✅ Account created! You earned 10 Starq Points! Check your email to confirm.';
       setTimeout(() => {
         window.location.href = 'https://starqindustriez.github.io/points.html';
-      }, 1000);
-    }
-  });
+      }, 2000);
+    });
 
-  // ==============================================
-  // SIGN-UP (WITH SUPABASE + POINTS)
-  // ==============================================
-  signupBtn.addEventListener('click', async () => {
-    const name = signupName.value.trim();
-    const email = signupEmail.value.trim();
-    const password = signupPassword.value.trim();
-    signupError.textContent = '';
-    signupSuccess.textContent = '';
+    // ==============================================
+    // AUTO-REDIRECT IF ALREADY LOGGED IN
+    // ==============================================
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        window.location.href = 'https://starqindustriez.github.io/points.html';
+      }
+    });
 
-    if (!name || !email || !password) {
-      signupError.textContent = 'Please fill in all fields.';
-      return;
-    }
-    if (password.length < 6) {
-      signupError.textContent = 'Password must be at least 6 characters.';
-      return;
-    }
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        window.location.href = 'https://starqindustriez.github.io/points.html';
+      }
+    });
 
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      signupError.textContent = error.message;
-      return;
-    }
-
-    const user = data.user;
-    if (!user) {
-      signupError.textContent = 'Sign-up failed. Please try again.';
-      return;
-    }
-
-    // ✅ Write to Supabase 'profiles' table
-    const { error: insertError } = await supabase
-      .from('profiles')
-      .insert([{
-        id: user.id,
-        email: email,
-        name: name,
-        points: 10
-      }]);
-
-    if (insertError) {
-      signupError.textContent = 'Error saving profile: ' + insertError.message;
-      return;
-    }
-
-    // ✅ Log the signup bonus transaction
-    await supabase
-      .from('transactions')
-      .insert([{
-        user_id: user.id,
-        points: 10,
-        reason: 'Signup Bonus'
-      }]);
-
-    signupSuccess.textContent = '✅ Account created! You earned 10 Starq Points! Check your email to confirm.';
-    setTimeout(() => {
-      window.location.href = 'https://starqindustriez.github.io/points.html';
-    }, 2000);
-  });
-
-  // ==============================================
-  // AUTO-REDIRECT IF ALREADY LOGGED IN
-  // ==============================================
-  supabase.auth.getSession().then(({ data }) => {
-    if (data.session) {
-      window.location.href = 'https://starqindustriez.github.io/points.html';
-    }
-  });
-
-  // Listen for auth state changes
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' && session) {
-      window.location.href = 'https://starqindustriez.github.io/points.html';
-    }
-  });
+  }); // End DOMContentLoaded
 </script>
 </body>
 </html>

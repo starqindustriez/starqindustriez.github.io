@@ -3,25 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Products – STARQ INDUSTRIEZ</title>
-
-  <!-- Supabase SDK -->
+  <title>Home – STARQ INDUSTRIEZ</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background-color: #0A0A0A;
+      background: #0A0A0A;
       color: #E0E0E0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       padding: 40px 20px;
       display: flex;
       justify-content: center;
     }
-    .container {
-      max-width: 1200px;
-      width: 100%;
-    }
+    .container { max-width: 1200px; width: 100%; }
     .header {
       border-bottom: 2px solid #00f3ff;
       padding-bottom: 20px;
@@ -32,30 +26,11 @@
       flex-wrap: wrap;
       gap: 15px;
     }
-    .logo h1 {
-      color: #00f3ff;
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-    }
-    .logo span {
-      color: #888;
-      font-size: 0.9rem;
-      display: block;
-    }
-    .user-area {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-    .user-area .greeting {
-      color: #aaa;
-      font-size: 0.95rem;
-    }
-    .user-area .greeting strong {
-      color: #00f3ff;
-    }
+    .logo h1 { color: #00f3ff; font-size: 2rem; font-weight: 700; letter-spacing: 2px; }
+    .logo span { color: #888; font-size: 0.9rem; display: block; }
+    .user-area { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+    .user-area .greeting { color: #aaa; font-size: 0.95rem; }
+    .user-area .greeting strong { color: #00f3ff; }
     .user-area .starz-badge {
       background: #1E1E1E;
       border: 1px solid #39ff14;
@@ -76,24 +51,22 @@
       font-size: 0.85rem;
       transition: 0.3s;
     }
-    .logout-btn:hover {
-      background: #cc0044;
+    .logout-btn:hover { background: #cc0044; }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 20px;
+      margin-bottom: 20px;
     }
     .nav-links a {
       color: #888;
       text-decoration: none;
-      margin-left: 18px;
       font-size: 1rem;
       transition: color 0.2s;
-    }
-    .nav-links a:hover {
-      color: #00f3ff;
-    }
-    .nav-links a.active {
-      color: #00f3ff;
-      border-bottom: 2px solid #00f3ff;
       padding-bottom: 5px;
     }
+    .nav-links a:hover { color: #00f3ff; }
+    .nav-links a.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -108,10 +81,7 @@
       text-align: center;
       transition: transform 0.2s, border-color 0.2s;
     }
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: #00f3ff;
-    }
+    .card:hover { transform: translateY(-5px); border-color: #00f3ff; }
     .card .icon { font-size: 3rem; margin-bottom: 10px; }
     .card h3 { color: #00f3ff; font-size: 1.4rem; margin-bottom: 8px; }
     .card .desc { color: #aaa; font-size: 0.9rem; margin-bottom: 15px; min-height: 40px; }
@@ -129,17 +99,7 @@
       border: none;
       cursor: pointer;
     }
-    .buy-btn:hover {
-      background: #00c8d4;
-      box-shadow: 0 0 15px #00f3ff88;
-    }
-    .buy-btn-placeholder {
-      color: #555;
-      font-size: 0.7rem;
-      margin-top: 10px;
-      border-top: 1px dashed #333;
-      padding-top: 10px;
-    }
+    .buy-btn:hover { background: #00c8d4; box-shadow: 0 0 15px #00f3ff88; }
     .footer {
       margin-top: 50px;
       border-top: 1px solid #222;
@@ -148,23 +108,17 @@
       color: #555;
       font-size: 0.9rem;
     }
-    .footer a {
-      color: #00f3ff;
-      text-decoration: none;
-    }
+    .footer a { color: #00f3ff; text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
     @media (max-width: 600px) {
       .header { flex-direction: column; align-items: start; }
       .user-area { width: 100%; justify-content: flex-start; }
-      .nav-links a { margin-left: 0; margin-right: 18px; }
     }
-    .hidden { display: none; }
   </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- ===== HEADER WITH USER INFO ===== -->
   <div class="header">
     <div class="logo">
       <h1>⚡ STARQ INDUSTRIEZ</h1>
@@ -179,62 +133,47 @@
 
   <!-- ===== NAVIGATION ===== -->
   <div class="nav-links">
-    <a href="home.html" class="active">Home</a>
+    <a href="home.html" class="active">🏠 Home</a>
+    <a href="points.html">📊 Dashboard</a>
     <a href="about.html">About</a>
   </div>
 
   <!-- ===== PRODUCT GRID ===== -->
   <div class="grid">
-
-    <!-- Product 1: Guardian -->
-    <a href="guardian.html" target="_blank" style="text-decoration: none; color: inherit; display: block;">
-      <div class="card">
-        <div class="icon">🛡️</div>
-        <h3>Security Guardian</h3>
-        <div class="desc">USB virus scanner, real-time monitor, USB history tracker, and threat counter.</div>
-        <div class="price">₹199</div>
-        <div style="margin-top: 10px; color: #00f3ff; font-size: 0.8rem; border-top: 1px dashed #333; padding-top: 10px;">📖 Click to view details & download</div>
-      </div>
-    </a>
-
-    <!-- Product 2: YT Downloader -->
+    <div class="card">
+      <div class="icon">🛡️</div>
+      <h3>Security Guardian</h3>
+      <div class="desc">USB virus scanner, real-time monitor, USB history tracker, and threat counter.</div>
+      <div class="price">₹199</div>
+      <a href="guardian.html" class="buy-btn">View Details</a>
+    </div>
     <div class="card">
       <div class="icon">📹</div>
       <h3>YT Playlist Downloader</h3>
       <div class="desc">Download entire YouTube playlists as MP4 or MP3 in one click.</div>
       <div class="price">₹50</div>
       <a href="#" class="buy-btn">Buy Now</a>
-      <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
     </div>
-
-    <!-- Product 3: Nova Cleaner -->
     <div class="card">
       <div class="icon">🧹</div>
       <h3>Nova Cleaner</h3>
       <div class="desc">One-click system cleaner. Removes junk files and temp data instantly.</div>
       <div class="price">₹20</div>
       <a href="#" class="buy-btn">Buy Now</a>
-      <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
     </div>
-
-    <!-- Product 4: MoodTune -->
     <div class="card">
       <div class="icon">🎵</div>
       <h3>MoodTune</h3>
       <div class="desc">Offline ambient music generator. Relax, focus, and code in peace.</div>
       <div class="price">₹10</div>
       <a href="#" class="buy-btn">Buy Now</a>
-      <div class="buy-btn-placeholder">🔧 Replace with Instamojo embed code</div>
     </div>
-
   </div>
 
-  <!-- ===== FOOTER ===== -->
   <div class="footer">
     <p>📱 Follow us on Instagram: <a href="https://instagram.com/starq.industriez" target="_blank">@starq.industriez</a></p>
     <p style="margin-top: 5px;">Built with ❤️ in India 🇮🇳 | © 2026 Starq Industriez</p>
   </div>
-
 </div>
 
 <script>
@@ -253,40 +192,30 @@
   const logoutBtn = document.getElementById('logoutBtn');
 
   // ==============================================
-  // PROTECT PAGE & LOAD USER DATA
+  // LOAD USER DATA
   // ==============================================
   async function loadUserData() {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      // No user → redirect to login
-      window.location.href = 'https://starqindustriez.github.io/index.html';
+      window.location.href = 'https://starqindustriez.github.io/points.html';
       return;
     }
 
-    // Show user name (use email as fallback)
-    userNameDisplay.textContent = user.email.split('@')[0] || 'User';
+    // ✅ Fetch name and points from profiles table
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('name, points')
+      .eq('id', user.id)
+      .single();
 
-    // Fetch points from Supabase
-    try {
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('points')
-        .eq('id', user.id)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
-        starzDisplay.textContent = '⭐ 0';
-        return;
-      }
-
-      const points = profile?.points || 0;
-      starzDisplay.textContent = `⭐ ${points}`;
-
-    } catch (err) {
-      console.error('Error loading points:', err);
+    if (error) {
+      console.error('Error fetching profile:', error);
+      userNameDisplay.textContent = user.email.split('@')[0] || 'User';
       starzDisplay.textContent = '⭐ 0';
+    } else {
+      userNameDisplay.textContent = profile.name || user.email.split('@')[0] || 'User';
+      starzDisplay.textContent = `⭐ ${profile.points || 0}`;
     }
   }
 
@@ -295,7 +224,7 @@
   // ==============================================
   logoutBtn.addEventListener('click', async () => {
     await supabase.auth.signOut();
-    window.location.href = 'https://starqindustriez.github.io/index.html';
+    window.location.href = 'https://starqindustriez.github.io/points.html';
   });
 
   // ==============================================
@@ -303,15 +232,11 @@
   // ==============================================
   loadUserData();
 
-  // ==============================================
-  // AUTO-REDIRECT ON AUTH CHANGE (if logged out elsewhere)
-  // ==============================================
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_OUT') {
-      window.location.href = 'https://starqindustriez.github.io/index.html';
+      window.location.href = 'https://starqindustriez.github.io/points.html';
     }
     if (event === 'SIGNED_IN' && session) {
-      // Refresh user data when they log in again (or session restores)
       loadUserData();
     }
   });

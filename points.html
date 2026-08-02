@@ -91,7 +91,7 @@
         </div>
         <div class="form-group">
             <label>Password</label>
-            <input type="password" id="password" placeholder="••••••••">
+            <input type="password" id="password" placeholder="*********">
         </div>
         <div class="row">
             <button class="btn" id="signup-btn">Sign Up</button>
@@ -249,7 +249,11 @@
             showMessage(authMessage, 'Error: ' + error.message, true);
         } else {
             console.log('Signup success:', data);
-            showMessage(authMessage, '✅ Check your email to confirm your account!');
+            showMessage(authMessage, '✅ Account created! You earned 10 Starq Points!');
+            // ✅ REDIRECT TO HOME AFTER SIGNUP
+            setTimeout(() => {
+                window.location.href = 'https://starqindustriez.github.io/home.html';
+            }, 1500);
         }
     });
 
@@ -270,7 +274,10 @@
         } else {
             console.log('Login success:', data);
             showMessage(authMessage, '✅ Logged in successfully!');
-            loadDashboard();
+            // ✅ REDIRECT TO HOME AFTER LOGIN
+            setTimeout(() => {
+                window.location.href = 'https://starqindustriez.github.io/home.html';
+            }, 1000);
         }
     });
 

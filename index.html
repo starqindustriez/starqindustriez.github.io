@@ -1,10 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="refresh" content="0; url=https://starqindustriez.github.io/points.html">
-  <title> WELCOME TO Starq Industriez </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WELCOME TO Starq Industriez</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+    .splash-container {
+      text-align: center;
+    }
+
+    .neon-text {
+      font-size: 4.5rem;
+      font-weight: 700;
+      letter-spacing: 6px;
+      color: #00f3ff;
+      text-shadow:
+        0 0 10px #00f3ff,
+        0 0 20px #00f3ff,
+        0 0 40px #00f3ff,
+        0 0 80px #00f3ff,
+        0 0 120px #00f3ff;
+      animation: glowPulse 2s ease-in-out infinite alternate;
+    }
+
+    .neon-text .starq {
+      color: #ff00e5;
+      text-shadow:
+        0 0 10px #ff00e5,
+        0 0 20px #ff00e5,
+        0 0 40px #ff00e5,
+        0 0 80px #ff00e5,
+        0 0 120px #ff00e5;
+    }
+
+    .sub-text {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #888;
+      letter-spacing: 4px;
+      animation: fadeIn 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowPulse {
+      0% {
+        text-shadow:
+          0 0 10px #00f3ff,
+          0 0 20px #00f3ff,
+          0 0 40px #00f3ff,
+          0 0 60px #00f3ff;
+        opacity: 0.8;
+      }
+      100% {
+        text-shadow:
+          0 0 20px #00f3ff,
+          0 0 40px #00f3ff,
+          0 0 80px #00f3ff,
+          0 0 120px #00f3ff,
+          0 0 160px #00f3ff;
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    .loading-dots::after {
+      content: '';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0% { content: ''; }
+      25% { content: '.'; }
+      50% { content: '..'; }
+      75% { content: '...'; }
+      100% { content: ''; }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 600px) {
+      .neon-text {
+        font-size: 2.5rem;
+        letter-spacing: 3px;
+      }
+      .sub-text {
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+      }
+    }
+  </style>
+
+  <!-- Auto-redirect after 3 seconds -->
+  <meta http-equiv="refresh" content="3; url=https://starqindustriez.github.io/points.html">
+
 </head>
 <body>
-  <p>Redirecting to Starq Industriez...</p>
+
+  <div class="splash-container">
+    <div class="neon-text">
+      WELCOME TO <span class="starq">STARQ</span> INDUSTRIEZ
+    </div>
+    <div class="sub-text">
+      ⚡ BUILDING THE FUTURE <span class="loading-dots"></span>
+    </div>
+  </div>
+
 </body>
 </html>

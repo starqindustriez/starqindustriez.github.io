@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Home – STARQ INDUSTRIEZ</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -69,7 +69,7 @@
     .nav-links a.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
       margin: 40px 0;
     }
@@ -85,7 +85,85 @@
     .card .icon { font-size: 3rem; margin-bottom: 10px; }
     .card h3 { color: #00f3ff; font-size: 1.4rem; margin-bottom: 8px; }
     .card .desc { color: #aaa; font-size: 0.9rem; margin-bottom: 15px; min-height: 40px; }
-    .card .price { font-size: 1.3rem; font-weight: bold; color: #39ff14; margin-bottom: 15px; }
+    .card .price {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #39ff14;
+      margin-bottom: 15px;
+    }
+    .card .price .original {
+      text-decoration: line-through;
+      color: #888;
+      font-size: 1rem;
+      margin-right: 10px;
+    }
+    .discount-section {
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+      border: 1px solid #333;
+    }
+    .discount-section label {
+      display: block;
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-bottom: 5px;
+      text-align: left;
+    }
+    .discount-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .discount-row input {
+      flex: 1;
+      padding: 10px;
+      background: #0A0A0A;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      min-width: 80px;
+    }
+    .discount-row input:focus { border-color: #00f3ff; }
+    .discount-row input:disabled { opacity: 0.4; cursor: not-allowed; }
+    .discount-row .btn-apply {
+      padding: 10px 20px;
+      background: #ffaa00;
+      color: #0A0A0A;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .discount-row .btn-apply:hover { background: #ffcc44; box-shadow: 0 0 20px rgba(255, 170, 0, 0.3); }
+    .discount-row .btn-apply:disabled {
+      background: #555;
+      color: #999;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .discount-info {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 8px;
+      text-align: left;
+    }
+    .discount-info strong { color: #00f3ff; }
+    .discount-msg {
+      font-size: 0.85rem;
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .discount-msg.success { color: #39ff14; background: #1a2a1a; }
+    .discount-msg.error { color: #ff4444; background: #2a1a1a; }
+    .discount-msg.info { color: #ffaa00; background: #2a2a1a; }
     .buy-btn {
       display: inline-block;
       background: #00f3ff;
@@ -98,8 +176,16 @@
       transition: background 0.2s, box-shadow 0.2s;
       border: none;
       cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
     }
     .buy-btn:hover { background: #00c8d4; box-shadow: 0 0 15px #00f3ff88; }
+    .buy-btn:disabled {
+      background: #555;
+      color: #999;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
     .footer {
       margin-top: 50px;
       border-top: 1px solid #222;
@@ -113,19 +199,23 @@
     @media (max-width: 600px) {
       .header { flex-direction: column; align-items: start; }
       .user-area { width: 100%; justify-content: flex-start; }
+      .discount-row { flex-direction: column; }
+      .discount-row input { width: 100%; }
+      .discount-row .btn-apply { width: 100%; }
     }
   </style>
 </head>
 <body>
 <div class="container">
 
+  <!-- ===== HEADER ===== -->
   <div class="header">
     <div class="logo">
       <h1>⚡ STARQ INDUSTRIEZ</h1>
-      <span>Building next-gen utilities for Windows.</span>
+      <span>Affordable tools for real problems.</span>
     </div>
     <div class="user-area">
-      <span class="greeting">👋 Hello, <strong id="userNameDisplay">Guest</strong></span>
+      <span class="greeting">👋 Hello, <strong id="userNameDisplay">Founder</strong></span>
       <span class="starz-badge" id="starzDisplay">⭐ 0</span>
       <button class="logout-btn" id="logoutBtn">Logout</button>
     </div>
@@ -140,31 +230,54 @@
 
   <!-- ===== PRODUCT GRID ===== -->
   <div class="grid">
-    <div class="card">
+
+    <!-- Security Guardian (Flagship with Discount) -->
+    <div class="card" id="guardianCard">
       <div class="icon">🛡️</div>
       <h3>Security Guardian</h3>
-      <div class="desc">USB virus scanner, real-time monitor, USB history tracker, and threat counter.</div>
-      <div class="price">₹199</div>
-      <a href="guardian.html" class="buy-btn">View Details</a>
+      <div class="desc">USB virus scanner, real-time monitor, threat counter, and quarantine.</div>
+      <div class="price">
+        <span class="original" id="originalPrice">₹199</span>
+        <span id="discountedPrice">₹199</span>
+      </div>
+
+      <!-- ===== DISCOUNT SECTION ===== -->
+      <div class="discount-section" id="discountSection">
+        <label for="starzInput">🎯 Spend Starz to get ₹1 off for every 2 Starz</label>
+        <div class="discount-row">
+          <input type="number" id="starzInput" min="0" placeholder="Enter Starz" />
+          <button class="btn-apply" id="applyDiscountBtn">Apply</button>
+        </div>
+        <div class="discount-info">
+          <span id="maxStarzInfo">Max allowed: 0 Starz</span> &nbsp;|&nbsp;
+          <span id="discountValueInfo">Discount: ₹0</span>
+        </div>
+        <div id="discountMsg" class="discount-msg"></div>
+        <div id="discountStatus" class="discount-msg"></div>
+      </div>
+
+      <button class="buy-btn" id="buyNowBtn">Buy Now — ₹199</button>
     </div>
+
+    <!-- Other Products (Placeholder) -->
     <div class="card">
       <div class="icon">📹</div>
       <h3>YT Playlist Downloader</h3>
-      <div class="desc">Download entire YouTube playlists as MP4 or MP3 in one click.</div>
+      <div class="desc">Download entire YouTube playlists as MP4 or MP3.</div>
       <div class="price">₹50</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
     <div class="card">
       <div class="icon">🧹</div>
       <h3>Nova Cleaner</h3>
-      <div class="desc">One-click system cleaner. Removes junk files and temp data instantly.</div>
+      <div class="desc">One-click system cleaner. Removes junk and temp files.</div>
       <div class="price">₹20</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
     <div class="card">
       <div class="icon">🎵</div>
       <h3>MoodTune</h3>
-      <div class="desc">Offline ambient music generator. Relax, focus, and code in peace.</div>
+      <div class="desc">Offline ambient music generator. Relax, focus, and code.</div>
       <div class="price">₹10</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
@@ -178,6 +291,16 @@
 
 <script>
   // ==============================================
+  // CONFIGURATION
+  // ==============================================
+  const PRODUCT_PRICE = 199;
+  const MAX_DISCOUNT_PERCENT = 0.50; // 50% cap
+  const MAX_DISCOUNT_AMOUNT = Math.floor(PRODUCT_PRICE * MAX_DISCOUNT_PERCENT);
+  const MAX_STARZ_ALLOWED = MAX_DISCOUNT_AMOUNT * 2; // 2 Starz = ₹1
+
+  console.log(`🔧 Guardian — Price: ₹${PRODUCT_PRICE}, Max Discount: ₹${MAX_DISCOUNT_AMOUNT}, Max Starz: ${MAX_STARZ_ALLOWED}`);
+
+  // ==============================================
   // SUPABASE CONFIG
   // ==============================================
   const supabaseUrl = 'https://kowljwcajhtushpsrdxj.supabase.co';
@@ -190,6 +313,20 @@
   const userNameDisplay = document.getElementById('userNameDisplay');
   const starzDisplay = document.getElementById('starzDisplay');
   const logoutBtn = document.getElementById('logoutBtn');
+  const originalPrice = document.getElementById('originalPrice');
+  const discountedPrice = document.getElementById('discountedPrice');
+  const starzInput = document.getElementById('starzInput');
+  const applyBtn = document.getElementById('applyDiscountBtn');
+  const maxStarzInfo = document.getElementById('maxStarzInfo');
+  const discountValueInfo = document.getElementById('discountValueInfo');
+  const discountMsg = document.getElementById('discountMsg');
+  const discountStatus = document.getElementById('discountStatus');
+  const buyBtn = document.getElementById('buyNowBtn');
+
+  let currentUser = null;
+  let currentPoints = 0;
+  let currentDiscount = 0;
+  let discountApplied = false;
 
   // ==============================================
   // LOAD USER DATA
@@ -202,7 +339,9 @@
       return;
     }
 
-    // ✅ Fetch name and points from profiles table
+    currentUser = user;
+
+    // Fetch user name
     const { data: profile, error } = await supabase
       .from('profiles')
       .select('name, points')
@@ -212,17 +351,187 @@
     if (error) {
       console.error('Error fetching profile:', error);
       userNameDisplay.textContent = user.email.split('@')[0] || 'User';
-      starzDisplay.textContent = '⭐ 0';
+      currentPoints = 0;
     } else {
       userNameDisplay.textContent = profile.name || user.email.split('@')[0] || 'User';
-      starzDisplay.textContent = `⭐ ${profile.points || 0}`;
+      currentPoints = profile.points || 0;
     }
+
+    starzDisplay.textContent = `⭐ ${currentPoints}`;
+
+    // Check if discount was already applied in this session
+    if (localStorage.getItem('guardian_discount_applied') === 'true') {
+      discountApplied = true;
+      const savedDiscount = parseInt(localStorage.getItem('guardian_discount_amount')) || 0;
+      if (savedDiscount > 0) {
+        applyDiscountToUI(savedDiscount);
+      }
+    }
+
+    updateUI();
   }
+
+  // ==============================================
+  // UPDATE UI
+  // ==============================================
+  function updateUI() {
+    const maxStarz = Math.min(currentPoints, MAX_STARZ_ALLOWED);
+    maxStarzInfo.textContent = `Max allowed: ${maxStarz} Starz`;
+
+    if (discountApplied) {
+      starzInput.disabled = true;
+      applyBtn.disabled = true;
+      starzInput.placeholder = 'Discount already applied';
+      discountStatus.className = 'discount-msg success';
+      discountStatus.textContent = '✅ Discount applied! You can use it once.';
+      return;
+    }
+
+    if (currentPoints === 0) {
+      starzInput.disabled = true;
+      applyBtn.disabled = true;
+      starzInput.placeholder = 'No Starz available';
+      discountStatus.className = 'discount-msg info';
+      discountStatus.textContent = '💡 Earn Starz by checking in daily or completing quests.';
+      return;
+    }
+
+    if (maxStarz === 0) {
+      starzInput.disabled = true;
+      applyBtn.disabled = true;
+      starzInput.placeholder = 'Max Starz reached';
+      discountStatus.className = 'discount-msg info';
+      discountStatus.textContent = `💡 You've reached the max discount (₹${MAX_DISCOUNT_AMOUNT} off).`;
+      return;
+    }
+
+    starzInput.disabled = false;
+    applyBtn.disabled = false;
+    starzInput.placeholder = `Enter Starz (max ${maxStarz})`;
+    starzInput.max = maxStarz;
+    discountStatus.className = 'discount-msg info';
+    discountStatus.textContent = `💰 You have ${currentPoints} Starz — spend them for ₹1 off per 2 Starz.`;
+
+    // Auto-calculate discount on input change
+    starzInput.addEventListener('input', function() {
+      const val = parseInt(this.value) || 0;
+      const clamped = Math.min(val, maxStarz);
+      const discount = Math.floor(clamped / 2);
+      discountValueInfo.textContent = `Discount: ₹${discount}`;
+
+      if (clamped > 0) {
+        discountStatus.className = 'discount-msg info';
+        discountStatus.textContent = `🎯 You'll get ₹${discount} off for ${clamped} Starz.`;
+      } else {
+        discountStatus.className = 'discount-msg info';
+        discountStatus.textContent = `💰 You have ${currentPoints} Starz — spend them for ₹1 off per 2 Starz.`;
+      }
+    });
+
+    // Trigger initial calculation
+    starzInput.dispatchEvent(new Event('input'));
+  }
+
+  // ==============================================
+  // APPLY DISCOUNT TO UI
+  // ==============================================
+  function applyDiscountToUI(discountAmount) {
+    currentDiscount = discountAmount;
+    const finalPrice = PRODUCT_PRICE - discountAmount;
+    originalPrice.style.display = 'inline';
+    discountedPrice.textContent = `₹${finalPrice}`;
+    buyBtn.textContent = `Buy Now — ₹${finalPrice}`;
+    discountApplied = true;
+    localStorage.setItem('guardian_discount_applied', 'true');
+    localStorage.setItem('guardian_discount_amount', discountAmount.toString());
+    discountMsg.className = 'discount-msg success';
+    discountMsg.textContent = `✅ ₹${discountAmount} off applied! Final price: ₹${finalPrice}`;
+    updateUI();
+  }
+
+  // ==============================================
+  // APPLY DISCOUNT (Supabase)
+  // ==============================================
+  applyBtn.addEventListener('click', async () => {
+    if (discountApplied) {
+      discountMsg.className = 'discount-msg error';
+      discountMsg.textContent = '❌ Discount already applied.';
+      return;
+    }
+
+    const starzToSpend = parseInt(starzInput.value) || 0;
+    const maxStarz = Math.min(currentPoints, MAX_STARZ_ALLOWED);
+
+    if (starzToSpend <= 0) {
+      discountMsg.className = 'discount-msg error';
+      discountMsg.textContent = '❌ Please enter a valid number of Starz.';
+      return;
+    }
+
+    if (starzToSpend > maxStarz) {
+      discountMsg.className = 'discount-msg error';
+      discountMsg.textContent = `❌ You can only spend up to ${maxStarz} Starz.`;
+      return;
+    }
+
+    if (starzToSpend % 2 !== 0) {
+      discountMsg.className = 'discount-msg error';
+      discountMsg.textContent = '❌ Starz must be an even number (2 Starz = ₹1).';
+      return;
+    }
+
+    const discountAmount = starzToSpend / 2;
+    if (discountAmount > MAX_DISCOUNT_AMOUNT) {
+      discountMsg.className = 'discount-msg error';
+      discountMsg.textContent = `❌ Max discount is ₹${MAX_DISCOUNT_AMOUNT}. You entered ₹${discountAmount}.`;
+      return;
+    }
+
+    // Confirm with user
+    const confirmMsg = `You are about to spend ${starzToSpend} Starz to get ₹${discountAmount} off.\nFinal price: ₹${PRODUCT_PRICE - discountAmount}\n\nProceed?`;
+    if (!confirm(confirmMsg)) return;
+
+    // Deduct points from Supabase
+    const newPoints = currentPoints - starzToSpend;
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ points: newPoints })
+      .eq('id', currentUser.id);
+
+    if (updateError) {
+      console.error('Error updating points:', updateError);
+      discountMsg.className = 'discount-msg error';
+      discountMsg.textContent = '❌ Error applying discount. Please try again.';
+      return;
+    }
+
+    // Log transaction
+    const { error: txError } = await supabase
+      .from('transactions')
+      .insert([{
+        user_id: currentUser.id,
+        points: -starzToSpend,
+        reason: `Guardian discount (${starzToSpend} Starz = ₹${discountAmount})`
+      }]);
+
+    if (txError) {
+      console.error('Error logging transaction:', txError);
+    }
+
+    // Update local state
+    currentPoints = newPoints;
+    starzDisplay.textContent = `⭐ ${currentPoints}`;
+
+    // Apply discount to UI
+    applyDiscountToUI(discountAmount);
+  });
 
   // ==============================================
   // LOGOUT
   // ==============================================
   logoutBtn.addEventListener('click', async () => {
+    localStorage.removeItem('guardian_discount_applied');
+    localStorage.removeItem('guardian_discount_amount');
     await supabase.auth.signOut();
     window.location.href = 'https://starqindustriez.github.io/points.html';
   });
@@ -234,6 +543,8 @@
 
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_OUT') {
+      localStorage.removeItem('guardian_discount_applied');
+      localStorage.removeItem('guardian_discount_amount');
       window.location.href = 'https://starqindustriez.github.io/points.html';
     }
     if (event === 'SIGNED_IN' && session) {

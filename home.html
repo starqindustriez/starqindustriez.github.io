@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home – STARQ INDUSTRIEZ</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -69,7 +69,7 @@
     .nav-links a.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 30px;
       margin: 40px 0;
     }
@@ -85,18 +85,8 @@
     .card .icon { font-size: 3rem; margin-bottom: 10px; }
     .card h3 { color: #00f3ff; font-size: 1.4rem; margin-bottom: 8px; }
     .card .desc { color: #aaa; font-size: 0.9rem; margin-bottom: 15px; min-height: 40px; }
-    .card .price {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #39ff14;
-      margin-bottom: 15px;
-    }
-    .card .price .original {
-      text-decoration: line-through;
-      color: #888;
-      font-size: 1rem;
-      margin-right: 10px;
-    }
+    .card .price { font-size: 1.3rem; font-weight: bold; color: #39ff14; margin-bottom: 15px; }
+    /* ----- NEW DISCOUNT STYLES (added without removing existing) ----- */
     .discount-section {
       background: #1a1a1a;
       padding: 15px;
@@ -164,6 +154,37 @@
     .discount-msg.success { color: #39ff14; background: #1a2a1a; }
     .discount-msg.error { color: #ff4444; background: #2a1a1a; }
     .discount-msg.info { color: #ffaa00; background: #2a2a1a; }
+    /* Price with strikethrough for original */
+    .price .original {
+      text-decoration: line-through;
+      color: #888;
+      font-size: 1rem;
+      margin-right: 10px;
+    }
+    /* Buy button inside Guardian card (will be updated dynamically) */
+    .buy-btn-guardian {
+      display: inline-block;
+      background: #00f3ff;
+      color: #0A0A0A;
+      font-weight: bold;
+      padding: 10px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background 0.2s, box-shadow 0.2s;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .buy-btn-guardian:hover { background: #00c8d4; box-shadow: 0 0 15px #00f3ff88; }
+    .buy-btn-guardian:disabled {
+      background: #555;
+      color: #999;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    /* Other product buy buttons remain as original class */
     .buy-btn {
       display: inline-block;
       background: #00f3ff;
@@ -176,16 +197,8 @@
       transition: background 0.2s, box-shadow 0.2s;
       border: none;
       cursor: pointer;
-      margin-top: 10px;
-      width: 100%;
     }
     .buy-btn:hover { background: #00c8d4; box-shadow: 0 0 15px #00f3ff88; }
-    .buy-btn:disabled {
-      background: #555;
-      color: #999;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
     .footer {
       margin-top: 50px;
       border-top: 1px solid #222;
@@ -208,14 +221,13 @@
 <body>
 <div class="container">
 
-  <!-- ===== HEADER ===== -->
   <div class="header">
     <div class="logo">
       <h1>⚡ STARQ INDUSTRIEZ</h1>
-      <span>Affordable tools for real problems.</span>
+      <span>Building next-gen utilities for Windows.</span>
     </div>
     <div class="user-area">
-      <span class="greeting">👋 Hello, <strong id="userNameDisplay">Founder</strong></span>
+      <span class="greeting">👋 Hello, <strong id="userNameDisplay">Guest</strong></span>
       <span class="starz-badge" id="starzDisplay">⭐ 0</span>
       <button class="logout-btn" id="logoutBtn">Logout</button>
     </div>
@@ -230,19 +242,18 @@
 
   <!-- ===== PRODUCT GRID ===== -->
   <div class="grid">
-
-    <!-- Security Guardian (Flagship with Discount) -->
+    <!-- Security Guardian (with discount feature) -->
     <div class="card" id="guardianCard">
       <div class="icon">🛡️</div>
       <h3>Security Guardian</h3>
-      <div class="desc">USB virus scanner, real-time monitor, threat counter, and quarantine.</div>
+      <div class="desc">USB virus scanner, real-time monitor, USB history tracker, and threat counter.</div>
       <div class="price">
         <span class="original" id="originalPrice">₹199</span>
         <span id="discountedPrice">₹199</span>
       </div>
 
-      <!-- ===== DISCOUNT SECTION ===== -->
-      <div class="discount-section" id="discountSection">
+      <!-- NEW DISCOUNT SECTION -->
+      <div class="discount-section">
         <label for="starzInput">🎯 Spend Starz to get ₹1 off for every 2 Starz</label>
         <div class="discount-row">
           <input type="number" id="starzInput" min="0" placeholder="Enter Starz" />
@@ -256,28 +267,28 @@
         <div id="discountStatus" class="discount-msg"></div>
       </div>
 
-      <button class="buy-btn" id="buyNowBtn">Buy Now — ₹199</button>
+      <button class="buy-btn-guardian" id="buyNowBtnGuardian">Buy Now — ₹199</button>
     </div>
 
-    <!-- Other Products (Placeholder) -->
+    <!-- Other products (unchanged) -->
     <div class="card">
       <div class="icon">📹</div>
       <h3>YT Playlist Downloader</h3>
-      <div class="desc">Download entire YouTube playlists as MP4 or MP3.</div>
+      <div class="desc">Download entire YouTube playlists as MP4 or MP3 in one click.</div>
       <div class="price">₹50</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
     <div class="card">
       <div class="icon">🧹</div>
       <h3>Nova Cleaner</h3>
-      <div class="desc">One-click system cleaner. Removes junk and temp files.</div>
+      <div class="desc">One-click system cleaner. Removes junk files and temp data instantly.</div>
       <div class="price">₹20</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
     <div class="card">
       <div class="icon">🎵</div>
       <h3>MoodTune</h3>
-      <div class="desc">Offline ambient music generator. Relax, focus, and code.</div>
+      <div class="desc">Offline ambient music generator. Relax, focus, and code in peace.</div>
       <div class="price">₹10</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
@@ -291,28 +302,28 @@
 
 <script>
   // ==============================================
-  // CONFIGURATION
+  // CONFIGURATION FOR DISCOUNT (NEW)
   // ==============================================
   const PRODUCT_PRICE = 199;
   const MAX_DISCOUNT_PERCENT = 0.50; // 50% cap
   const MAX_DISCOUNT_AMOUNT = Math.floor(PRODUCT_PRICE * MAX_DISCOUNT_PERCENT);
   const MAX_STARZ_ALLOWED = MAX_DISCOUNT_AMOUNT * 2; // 2 Starz = ₹1
 
-  console.log(`🔧 Guardian — Price: ₹${PRODUCT_PRICE}, Max Discount: ₹${MAX_DISCOUNT_AMOUNT}, Max Starz: ${MAX_STARZ_ALLOWED}`);
-
   // ==============================================
-  // SUPABASE CONFIG
+  // SUPABASE CONFIG (Existing)
   // ==============================================
   const supabaseUrl = 'https://kowljwcajhtushpsrdxj.supabase.co';
   const supabaseKey = 'sb_publishable_u5RKXb4Mq9OaFl1k74-teQ_9iRMWbyf';
   const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
   // ==============================================
-  // DOM REFS
+  // DOM REFS (Existing + New)
   // ==============================================
   const userNameDisplay = document.getElementById('userNameDisplay');
   const starzDisplay = document.getElementById('starzDisplay');
   const logoutBtn = document.getElementById('logoutBtn');
+
+  // New elements for discount
   const originalPrice = document.getElementById('originalPrice');
   const discountedPrice = document.getElementById('discountedPrice');
   const starzInput = document.getElementById('starzInput');
@@ -321,15 +332,18 @@
   const discountValueInfo = document.getElementById('discountValueInfo');
   const discountMsg = document.getElementById('discountMsg');
   const discountStatus = document.getElementById('discountStatus');
-  const buyBtn = document.getElementById('buyNowBtn');
+  const buyBtnGuardian = document.getElementById('buyNowBtnGuardian');
 
+  // ==============================================
+  // STATE VARIABLES
+  // ==============================================
   let currentUser = null;
   let currentPoints = 0;
   let currentDiscount = 0;
   let discountApplied = false;
 
   // ==============================================
-  // LOAD USER DATA
+  // LOAD USER DATA (Existing - updated to store points)
   // ==============================================
   async function loadUserData() {
     const { data: { user } } = await supabase.auth.getUser();
@@ -341,7 +355,7 @@
 
     currentUser = user;
 
-    // Fetch user name
+    // Fetch name and points from profiles table
     const { data: profile, error } = await supabase
       .from('profiles')
       .select('name, points')
@@ -359,7 +373,7 @@
 
     starzDisplay.textContent = `⭐ ${currentPoints}`;
 
-    // Check if discount was already applied in this session
+    // Check if discount was already applied in this session (persist)
     if (localStorage.getItem('guardian_discount_applied') === 'true') {
       discountApplied = true;
       const savedDiscount = parseInt(localStorage.getItem('guardian_discount_amount')) || 0;
@@ -368,11 +382,12 @@
       }
     }
 
+    // Update discount UI (new)
     updateUI();
   }
 
   // ==============================================
-  // UPDATE UI
+  // UPDATE DISCOUNT UI (NEW)
   // ==============================================
   function updateUI() {
     const maxStarz = Math.min(currentPoints, MAX_STARZ_ALLOWED);
@@ -433,14 +448,14 @@
   }
 
   // ==============================================
-  // APPLY DISCOUNT TO UI
+  // APPLY DISCOUNT TO UI (NEW)
   // ==============================================
   function applyDiscountToUI(discountAmount) {
     currentDiscount = discountAmount;
     const finalPrice = PRODUCT_PRICE - discountAmount;
     originalPrice.style.display = 'inline';
     discountedPrice.textContent = `₹${finalPrice}`;
-    buyBtn.textContent = `Buy Now — ₹${finalPrice}`;
+    buyBtnGuardian.textContent = `Buy Now — ₹${finalPrice}`;
     discountApplied = true;
     localStorage.setItem('guardian_discount_applied', 'true');
     localStorage.setItem('guardian_discount_amount', discountAmount.toString());
@@ -450,7 +465,7 @@
   }
 
   // ==============================================
-  // APPLY DISCOUNT (Supabase)
+  // APPLY DISCOUNT BUTTON (NEW)
   // ==============================================
   applyBtn.addEventListener('click', async () => {
     if (discountApplied) {
@@ -527,7 +542,7 @@
   });
 
   // ==============================================
-  // LOGOUT
+  // LOGOUT (Existing)
   // ==============================================
   logoutBtn.addEventListener('click', async () => {
     localStorage.removeItem('guardian_discount_applied');

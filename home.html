@@ -121,60 +121,58 @@
 
   <div class="header">
     <div class="logo">
-      <h1>⚡ STARQ INDUSTRIEZ</h1>
+      <h1>? STARQ INDUSTRIEZ</h1>
       <span>Building next-gen utilities for Windows.</span>
     </div>
     <div class="user-area">
-      <!-- NAME DISPLAY REMOVED: Static greeting -->
-      <span class="greeting">👋 Hello</span>
-      <!-- POINT COUNT REMOVED: Static starz badge -->
-      <span class="starz-badge">⭐ 0</span>
+      <span class="greeting">?? Hello, <strong id="userNameDisplay">Guest</strong></span>
+      <span class="starz-badge" id="starzDisplay">? 0</span>
       <button class="logout-btn" id="logoutBtn">Logout</button>
     </div>
   </div>
 
   <!-- ===== NAVIGATION ===== -->
   <div class="nav-links">
-    <a href="home.html" class="active">🏠 Home</a>
-    <a href="points.html">📊 Dashboard</a>
+    <a href="home.html" class="active">?? Home</a>
+    <a href="points.html">?? Dashboard</a>
     <a href="about.html">About</a>
   </div>
 
   <!-- ===== PRODUCT GRID ===== -->
   <div class="grid">
     <div class="card">
-      <div class="icon">🛡️</div>
+      <div class="icon">???</div>
       <h3>Security Guardian</h3>
       <div class="desc">USB virus scanner, real-time monitor, USB history tracker, and threat counter.</div>
-      <div class="price">₹199</div>
+      <div class="price">?199</div>
       <a href="guardian.html" class="buy-btn">View Details</a>
     </div>
     <div class="card">
-      <div class="icon">📹</div>
+      <div class="icon">??</div>
       <h3>YT Playlist Downloader</h3>
       <div class="desc">Download entire YouTube playlists as MP4 or MP3 in one click.</div>
-      <div class="price">₹50</div>
+      <div class="price">?50</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
     <div class="card">
-      <div class="icon">🧹</div>
+      <div class="icon">??</div>
       <h3>Nova Cleaner</h3>
       <div class="desc">One-click system cleaner. Removes junk files and temp data instantly.</div>
-      <div class="price">₹20</div>
+      <div class="price">?20</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
     <div class="card">
-      <div class="icon">🎵</div>
+      <div class="icon">??</div>
       <h3>MoodTune</h3>
       <div class="desc">Offline ambient music generator. Relax, focus, and code in peace.</div>
-      <div class="price">₹10</div>
+      <div class="price">?10</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
   </div>
 
   <div class="footer">
-    <p>📱 Follow us on Instagram: <a href="https://instagram.com/starq.industriez" target="_blank">@starq.industriez</a></p>
-    <p style="margin-top: 5px;">Built with ❤️ in India 🇮🇳 | © 2026 Starq Industriez</p>
+    <p>?? Follow us on Instagram: <a href="https://instagram.com/starq.industriez" target="_blank">@starq.industriez</a></p>
+    <p style="margin-top: 5px;">Built with ?? in India ???? | © 2026 Starq Industriez</p>
   </div>
 </div>
 
@@ -189,10 +187,12 @@
   // ==============================================
   // DOM REFS
   // ==============================================
+  const userNameDisplay = document.getElementById('userNameDisplay');
+  const starzDisplay = document.getElementById('starzDisplay');
   const logoutBtn = document.getElementById('logoutBtn');
 
   // ==============================================
-  // CHECK LOGIN STATUS (Redirect if not logged in)
+  // LOAD USER DATA
   // ==============================================
   async function loadUserData() {
     const { data: { user } } = await supabase.auth.getUser();
@@ -202,7 +202,7 @@
       return;
     }
 
-    // ✅ Fetch user data (but don't display it)
+    // ? Fetch name and points from profiles table
     const { data: profile, error } = await supabase
       .from('profiles')
       .select('name, points')
@@ -211,6 +211,11 @@
 
     if (error) {
       console.error('Error fetching profile:', error);
+      userNameDisplay.textContent = user.email.split('@')[0] || 'User';
+      starzDisplay.textContent = '? 0';
+    } else {
+      userNameDisplay.textContent = profile.name || user.email.split('@')[0] || 'User';
+      starzDisplay.textContent = `? ${profile.points || 0}`;
     }
   }
 

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Security Guardian – STARQ INDUSTRIEZ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home – STARQ INDUSTRIEZ</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -69,7 +69,7 @@
     .nav-links a.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 30px;
       margin: 40px 0;
     }
@@ -85,42 +85,7 @@
     .card .icon { font-size: 3rem; margin-bottom: 10px; }
     .card h3 { color: #00f3ff; font-size: 1.4rem; margin-bottom: 8px; }
     .card .desc { color: #aaa; font-size: 0.9rem; margin-bottom: 15px; min-height: 40px; }
-    .card .price {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #39ff14;
-      margin-bottom: 15px;
-    }
-    .card .price .original {
-      text-decoration: line-through;
-      color: #888;
-      font-size: 1rem;
-      margin-right: 10px;
-    }
-    .discount-btn {
-      background: #ffaa00;
-      color: #0A0A0A;
-      font-weight: bold;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: 0.3s;
-      margin-top: 10px;
-    }
-    .discount-btn:hover { background: #ffcc44; box-shadow: 0 0 20px rgba(255, 170, 0, 0.3); }
-    .discount-btn:disabled {
-      background: #555;
-      color: #999;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    .discount-msg {
-      font-size: 0.8rem;
-      color: #ffaa00;
-      margin-top: 8px;
-    }
+    .card .price { font-size: 1.3rem; font-weight: bold; color: #39ff14; margin-bottom: 15px; }
     .buy-btn {
       display: inline-block;
       background: #00f3ff;
@@ -157,9 +122,10 @@
   <div class="header">
     <div class="logo">
       <h1>⚡ STARQ INDUSTRIEZ</h1>
-      <span>Affordable tools for real problems.</span>
+      <span>Building next-gen utilities for Windows.</span>
     </div>
     <div class="user-area">
+      <!-- ✅ Name removed — only "Hello, Founder" -->
       <span class="greeting">👋 Hello, <strong>Founder</strong></span>
       <span class="starz-badge" id="starzDisplay">⭐ 0</span>
       <button class="logout-btn" id="logoutBtn">Logout</button>
@@ -175,41 +141,31 @@
 
   <!-- ===== PRODUCT GRID ===== -->
   <div class="grid">
-    <!-- Guardian Card (Flagship) -->
-    <div class="card" id="guardianCard">
+    <div class="card">
       <div class="icon">🛡️</div>
       <h3>Security Guardian</h3>
-      <div class="desc">USB virus scanner, real-time monitor, threat counter, and quarantine.</div>
-      <div class="price">
-        <span class="original" id="originalPrice">₹199</span>
-        <span id="discountedPrice">₹199</span>
-      </div>
-      <div id="discountSection">
-        <button class="discount-btn" id="redeemDiscountBtn">🎯 Redeem 50 Starz for 10% off</button>
-        <div class="discount-msg" id="discountMsg"></div>
-      </div>
-      <a href="#" class="buy-btn" id="buyNowBtn">Buy Now</a>
+      <div class="desc">USB virus scanner, real-time monitor, USB history tracker, and threat counter.</div>
+      <div class="price">₹199</div>
+      <a href="guardian.html" class="buy-btn">View Details</a>
     </div>
-
-    <!-- Other products (placeholder) -->
     <div class="card">
       <div class="icon">📹</div>
       <h3>YT Playlist Downloader</h3>
-      <div class="desc">Download entire YouTube playlists as MP4 or MP3.</div>
+      <div class="desc">Download entire YouTube playlists as MP4 or MP3 in one click.</div>
       <div class="price">₹50</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
     <div class="card">
       <div class="icon">🧹</div>
       <h3>Nova Cleaner</h3>
-      <div class="desc">One-click system cleaner. Removes junk and temp files.</div>
+      <div class="desc">One-click system cleaner. Removes junk files and temp data instantly.</div>
       <div class="price">₹20</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
     <div class="card">
       <div class="icon">🎵</div>
       <h3>MoodTune</h3>
-      <div class="desc">Offline ambient music generator. Relax, focus, and code.</div>
+      <div class="desc">Offline ambient music generator. Relax, focus, and code in peace.</div>
       <div class="price">₹10</div>
       <a href="#" class="buy-btn">Buy Now</a>
     </div>
@@ -234,21 +190,9 @@
   // ==============================================
   const starzDisplay = document.getElementById('starzDisplay');
   const logoutBtn = document.getElementById('logoutBtn');
-  const redeemBtn = document.getElementById('redeemDiscountBtn');
-  const discountMsg = document.getElementById('discountMsg');
-  const originalPrice = document.getElementById('originalPrice');
-  const discountedPrice = document.getElementById('discountedPrice');
-  const buyBtn = document.getElementById('buyNowBtn');
-
-  let currentUser = null;
-  let currentPoints = 0;
-  let discountApplied = false;
-  const DISCOUNT_POINTS = 50;
-  const DISCOUNT_PERCENT = 0.10; // 10%
-  const ORIGINAL_PRICE = 199;
 
   // ==============================================
-  // LOAD USER DATA
+  // LOAD POINTS ONLY (Name is removed)
   // ==============================================
   async function loadUserData() {
     const { data: { user } } = await supabase.auth.getUser();
@@ -258,9 +202,7 @@
       return;
     }
 
-    currentUser = user;
-
-    // Fetch points
+    // ✅ Fetch points from profiles table
     const { data: profile, error } = await supabase
       .from('profiles')
       .select('points')
@@ -269,100 +211,16 @@
 
     if (error) {
       console.error('Error fetching profile:', error);
-      currentPoints = 0;
+      starzDisplay.textContent = '⭐ 0';
     } else {
-      currentPoints = profile.points || 0;
-    }
-
-    starzDisplay.textContent = `⭐ ${currentPoints}`;
-
-    // Check if discount was already applied in this session
-    if (localStorage.getItem('guardian_discount_applied') === 'true') {
-      discountApplied = true;
-      applyDiscount();
-    }
-
-    updateDiscountUI();
-  }
-
-  // ==============================================
-  // UPDATE DISCOUNT UI
-  // ==============================================
-  function updateDiscountUI() {
-    if (discountApplied) {
-      redeemBtn.disabled = true;
-      redeemBtn.textContent = '✅ Discount Applied!';
-      discountMsg.textContent = 'You used 50 Starz for 10% off!';
-      return;
-    }
-
-    if (currentPoints >= DISCOUNT_POINTS) {
-      redeemBtn.disabled = false;
-      redeemBtn.textContent = `🎯 Redeem ${DISCOUNT_POINTS} Starz for 10% off`;
-      discountMsg.textContent = `You have ${currentPoints} Starz — enough to redeem!`;
-    } else {
-      redeemBtn.disabled = true;
-      redeemBtn.textContent = `❌ Need ${DISCOUNT_POINTS} Starz (you have ${currentPoints})`;
-      discountMsg.textContent = `Earn more points by checking in daily or completing quests.`;
+      starzDisplay.textContent = `⭐ ${profile.points || 0}`;
     }
   }
 
   // ==============================================
-  // APPLY DISCOUNT
-  // ==============================================
-  function applyDiscount() {
-    const discounted = Math.round(ORIGINAL_PRICE * (1 - DISCOUNT_PERCENT));
-    originalPrice.style.display = 'inline';
-    discountedPrice.textContent = `₹${discounted}`;
-    buyBtn.textContent = `Buy Now — ₹${discounted}`;
-    discountApplied = true;
-    localStorage.setItem('guardian_discount_applied', 'true');
-  }
-
-  // ==============================================
-  // REDEEM DISCOUNT
-  // ==============================================
-  redeemBtn.addEventListener('click', async () => {
-    if (discountApplied) return;
-    if (currentPoints < DISCOUNT_POINTS) {
-      discountMsg.textContent = '❌ Not enough points!';
-      return;
-    }
-
-    // Deduct points
-    const newPoints = currentPoints - DISCOUNT_POINTS;
-    const { error } = await supabase
-      .from('profiles')
-      .update({ points: newPoints })
-      .eq('id', currentUser.id);
-
-    if (error) {
-      console.error('Error deducting points:', error);
-      discountMsg.textContent = '❌ Error applying discount. Try again.';
-      return;
-    }
-
-    // Log transaction
-    await supabase
-      .from('transactions')
-      .insert([{
-        user_id: currentUser.id,
-        points: -DISCOUNT_POINTS,
-        reason: 'Redeemed 10% discount on Guardian'
-      }]);
-
-    currentPoints = newPoints;
-    starzDisplay.textContent = `⭐ ${currentPoints}`;
-    applyDiscount();
-    updateDiscountUI();
-    discountMsg.textContent = '✅ Discount applied! Price updated.';
-  });
-
-  // ==============================================
-  // LOGOUT
+  // LOGOUT (FIXED — Now works)
   // ==============================================
   logoutBtn.addEventListener('click', async () => {
-    localStorage.removeItem('guardian_discount_applied');
     await supabase.auth.signOut();
     window.location.href = 'https://starqindustriez.github.io/points.html';
   });
@@ -374,7 +232,6 @@
 
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_OUT') {
-      localStorage.removeItem('guardian_discount_applied');
       window.location.href = 'https://starqindustriez.github.io/points.html';
     }
     if (event === 'SIGNED_IN' && session) {

@@ -200,7 +200,7 @@
         resetBtn.disabled = true;
 
         try {
-            const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+            const { data, error } = await sb.auth.resetPasswordForEmail(email, {
                 redirectTo: 'https://starqindustriez.github.io/reset-password.html'
             });
 
